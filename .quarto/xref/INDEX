@@ -1,0 +1,59 @@
+{
+  "index.qmd": {
+    "index.html": "f7e9c5ae"
+  },
+  "intro.qmd": {
+    "intro.html": "7de9a063"
+  },
+  "summary.qmd": {
+    "summary.html": "bd2a31ef"
+  },
+  "references.qmd": {
+    "references.html": "c72ac433"
+  },
+  "prob.ipynb": {
+    "prob.html": "e50342a6"
+  },
+  "bayes_theorem.ipynb": {
+    "bayes_theorem.html": "4d11c115"
+  },
+  "distributions.ipynb": {
+    "distributions.html": "29fadd81"
+  },
+  "theorem.ipynb": {
+    "theorem.html": "73ee9410"
+  },
+  "estimate_proportions.ipynb": {
+    "estimate_proportions.html": "24ff47fc"
+  },
+  "estimate_counts.ipynb": {
+    "estimate_counts.html": "d8f8f6d0"
+  },
+  "01_prob.ipynb": {
+    "01_prob.html": "88d9475a"
+  },
+  "02_theorem.ipynb": {
+    "02_theorem.html": "c41354f5"
+  },
+  "03_distributions.ipynb": {
+    "03_distributions.html": "c7b581e9"
+  },
+  "04_estimate_proportions.ipynb": {
+    "04_estimate_proportions.html": "5a79e69d"
+  },
+  "05_estimate_counts.ipynb": {
+    "05_estimate_counts.html": "1e17b156"
+  },
+  "min_max_mix.ipynb": {
+    "min_max_mix.html": "8fa5424f"
+  },
+  "06_min_max_mix.ipynb": {
+    "06_min_max_mix.html": "a2a5fc8f"
+  },
+  "07_poisson_process.ipynb": {
+    "07_poisson_process.html": "02335039"
+  },
+  "12_classification.ipynb": {
+    "12_classification.html": "92b767e6"
+  }
+}

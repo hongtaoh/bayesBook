@@ -1,0 +1,362 @@
+[
+  {
+    "objectID": "01_prob.html",
+    "href": "01_prob.html",
+    "title": "1  贝叶斯定理之证明",
+    "section": "",
+    "text": "1.1 A & B\n我们先来看一下 \\(P(A \\& B)\\):\ndef prob_sex_and_species(df, sex_str, species_str):\n    subset = df[(df['sex'] == sex_str) & (df['species'] == species_str)]\n    return len(subset) / len(df)\nprob_sex_and_species(df, sex_str='FEMALE', species_str='Adelie')\n\n0.21921921921921922",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>贝叶斯定理之证明</span>"
+    ]
+  },
+  {
+    "objectID": "01_prob.html#ab",
+    "href": "01_prob.html#ab",
+    "title": "1  贝叶斯定理之证明",
+    "section": "1.2 A|B",
+    "text": "1.2 A|B\n我们直接计算 \\(P(A|B)\\) 也就是 P(Female|Adelie):\n\ndef prob_sex_given_species(df, sex_str, species_str):\n    species_subset = df[df.species == species_str]\n    sex_subset_within_species_subset = species_subset[species_subset.sex == sex_str]\n    return len(sex_subset_within_species_subset)/len(species_subset)\n\n\nprob_sex_given_species(df, 'FEMALE', 'Adelie')\n\n0.5",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>贝叶斯定理之证明</span>"
+    ]
+  },
+  {
+    "objectID": "01_prob.html#贝叶斯定理",
+    "href": "01_prob.html#贝叶斯定理",
+    "title": "1  贝叶斯定理之证明",
+    "section": "1.3 贝叶斯定理",
+    "text": "1.3 贝叶斯定理\n首先，我们看到\n\\[P(A|B) = \\frac{P(A\\&B)}{P(B)}\n\\]\n\ndef prob_species(df, species_str):\n    subset = df[df.species == species_str]\n    return len(subset)/len(df)\n\n\nprob_species(df, 'Adelie')\n\n0.43843843843843844\n\n\n\nprob_sex_given_species(\n    df, 'FEMALE', 'Adelie') == prob_sex_and_species(\n    df, 'FEMALE', 'Adelie')/prob_species(df, 'Adelie')\n\nTrue\n\n\n我们也知道\n\\[P(A\\&B) = P(B\\&A)\\]\n这个貌似不用证明\n进而我们知道\n\\[P(A\\&B) = P(A|B) P(B)\\]\n所以\n\\[P(B\\&A) = P(B|A) P(A)\\]\n所以\n\\[\nP(A|B) = \\frac{P(A \\& B)}{P(B)} = \\frac{P(B\\&A)}{P(B)} = \\frac{ P(A) P(B|A) }{P(B)}\n\\]\n得证。",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>贝叶斯定理之证明</span>"
+    ]
+  },
+  {
+    "objectID": "02_theorem.html",
+    "href": "02_theorem.html",
+    "title": "2  贝叶斯公式之应用",
+    "section": "",
+    "text": "2.1 红球与白球\n最简单也最直接的想法是，我只看最后结果，你抽到的是红球，那这颗红球来自碗一的概率是\n\\[\\frac{30}{30 + 20} = \\frac{3}{5}\\]\n当然，我希望大家可以用贝叶斯公式来计算：\n\\[\\begin{aligned} P(碗_1 | 红球) &= \\frac{P(碗_1)P(红球 | 碗_1)}{P(红球)} & = \\frac{\\frac{1}{2} \\cdot \\frac{3}{4}}{\\frac{5}{8}} &= \\frac{3}{5} \\end{aligned}\\]\n贝叶斯公式普遍的情形是这样：\n\\[P(h|d) = \\frac{P(h) P(d|h)}{P(d)}\\]\n其中 \\(h\\) 表示 hypothesis，\\(d\\) 表示数据。我们把 \\(P(h)\\) 称为 prior (先验概率)，\\(P(d|h)\\) 称为 likelihood (似然)，\\(P(h|d)\\) 称为 posterior.\n在这里的话：\n下面是概率，可以是一个分布也可以是一组数：\n贝叶斯公式如下： \\[\nP(\\text{碗}_1 \\mid \\text{红球}) = \\frac{P(\\text{碗}_1) P(\\text{红球} \\mid \\text{碗}_1)}{P(\\text{红球})}\n\\]\n将这些值代入贝叶斯公式：\n\\[\nP(\\text{碗}_1 \\mid \\text{红球}) = \\frac{\\frac{1}{2} \\cdot \\frac{3}{4}}{\\frac{5}{8}} = \\frac{3}{5}\n\\]",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>贝叶斯公式之应用</span>"
+    ]
+  },
+  {
+    "objectID": "02_theorem.html#sec-red-white-balls",
+    "href": "02_theorem.html#sec-red-white-balls",
+    "title": "2  贝叶斯公式之应用",
+    "section": "",
+    "text": "碗 1 装着 30 颗红球和 10 颗白球\n碗 2 装着 20 颗红球和 20 颗白球\n请问，随机挑一只碗，然后随机抽一个球，假如抽到的是一颗红球，那这颗红球来自碗一的概率是多少？\n\n\n\n\n\n\n\n\n\n\nhypothesis: 红球来自碗一这个假设\ndata: 实际观测到的情况 （随机抽一只碗，随机抽一颗球，抽到了红球）\n\n\n\n\\(P(h)\\)，先验概率 (Prior)，这里的 h 是指 hypothesis），是说知道数据之前假设为真的概率。这里不是碗一就是碗二，所以 \\(P(\\text{碗一}) = 0.5\\)。\n\\(P(d|h)\\)，似然 (Likelihood)，假设为真的前提下观测到数据的概率。这里 \\(P(\\text{红球}|\\text{碗一}) = 0.75\\)。\n\\(P(d)\\) 是观测到的概率，也就是\n\\[\n  P(\\text{红球}) = P(\\text{碗}_1) P(\\text{红球} \\mid \\text{碗}_1) + P(\\text{碗}_2) P(\\text{红球} \\mid \\text{碗}_2)\n  \\]\n代入具体值\n\\[\n  P(\\text{红球}) = \\frac{1}{2} \\cdot \\frac{3}{4} + \\frac{1}{2} \\cdot \\frac{1}{2} = \\frac{5}{8}\n  \\]\nposterior: \\(P(h|d)\\)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>贝叶斯公式之应用</span>"
+    ]
+  },
+  {
+    "objectID": "02_theorem.html#贝叶斯表",
+    "href": "02_theorem.html#贝叶斯表",
+    "title": "2  贝叶斯公式之应用",
+    "section": "2.2 贝叶斯表",
+    "text": "2.2 贝叶斯表\n上面的计算其实比较麻烦，我们有更简单的办法：\n\nimport pandas as pd\ntable = pd.DataFrame(index = [\"碗1\", \"碗2\"])\n\ntable['prior'] = 1/2, 1/2\ntable\n\n\n\n\n\n\n\n\nprior\n\n\n\n\n碗1\n0.5\n\n\n碗2\n0.5\n\n\n\n\n\n\n\n在上面那个球与碗的情形中，hypothesis 是该红球来自碗一，data 是抽到一颗红球，prior 是 \\(p(碗_1)\\)，likelihood 是 \\(p(红球|碗_1)\\)，posterior 是 \\(p(碗_1 | 红球)\\)。\n那我们接着：\n\ntable['likelihood'] = 3/4, 1/2\ntable\n\n\n\n\n\n\n\n\nprior\nlikelihood\n\n\n\n\n碗1\n0.5\n0.75\n\n\n碗2\n0.5\n0.50\n\n\n\n\n\n\n\n然后 \\(prior * likelihood\\)，也就是 \\(P(碗_1)P(红球 | 碗_1)\\):\n\ntable['unnorm'] = table['prior'] * table['likelihood']\ntable\n## unnorm 表示 unnormalized posteriors\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\n\n\n\n\n碗1\n0.5\n0.75\n0.375\n\n\n碗2\n0.5\n0.50\n0.250\n\n\n\n\n\n\n\n因为我们知道 \\(p(d)\\) 也就是 \\(p(红球)\\) 为 \\(\\frac{5}{8}\\)，所以：\n\ntable['posterior'] = table['unnorm'] / (5/8)\ntable\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\nposterior\n\n\n\n\n碗1\n0.5\n0.75\n0.375\n0.6\n\n\n碗2\n0.5\n0.50\n0.250\n0.4\n\n\n\n\n\n\n\n这个结果和我们算出来的 \\(3/5\\) 是一致的。我们甚至还知道了 \\(p(碗_2|红球) = \\frac{2}{5}\\)。\n其实，更简单的做法是，既然 unnorm 是 posterior 的非标准化版，那我们把 unnorm 标准化一下不就好了吗？怎么标准化？除以 unnorm 的和就可以了。\n\ntable['posterior_again'] = table['unnorm'] / table['unnorm'].sum()\ntable\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\nposterior\nposterior_again\n\n\n\n\n碗1\n0.5\n0.75\n0.375\n0.6\n0.6\n\n\n碗2\n0.5\n0.50\n0.250\n0.4\n0.4",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>贝叶斯公式之应用</span>"
+    ]
+  },
+  {
+    "objectID": "02_theorem.html#骰子问题",
+    "href": "02_theorem.html#骰子问题",
+    "title": "2  贝叶斯公式之应用",
+    "section": "2.3 骰子问题",
+    "text": "2.3 骰子问题\n假设我们有三个骰子：6 面的、8 面的、12 面的。A 君随机抽一个骰子，然后抛向空中，落下来的数字是 1。A 君让 B 君说出这个骰子是 6 面的概率。\n我们来分析一下，我们想知道的是 \\(p(dice = 6 | number = 1)\\)，所以：\n\nprior: \\(p(dice = 6)\\)\nlikelihood: \\(p(number = 1 | dice = 6)\\)\ndata: \\(p(number = 1)\\)\nposterior: \\(p(dice = 6 | number = 1)\\)\n\n\ntable2 = pd.DataFrame(index = [6, 8, 12])\nfrom fractions import Fraction\ntable2['prior'] = Fraction(1,3)\ntable2['likelihood'] = Fraction(1,6), Fraction(1,8), Fraction(1, 12)\ntable2\n\n\n\n\n\n\n\n\nprior\nlikelihood\n\n\n\n\n6\n1/3\n1/6\n\n\n8\n1/3\n1/8\n\n\n12\n1/3\n1/12\n\n\n\n\n\n\n\n\ntable2['unnorm'] = table2['prior'] * table2['likelihood']\ntable2\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\n\n\n\n\n6\n1/3\n1/6\n1/18\n\n\n8\n1/3\n1/8\n1/24\n\n\n12\n1/3\n1/12\n1/36\n\n\n\n\n\n\n\n我们知道 “unnorm” 基本上已经是 posterior 了，唯一的区别是其还未标准化。\n\ntable2['posterior'] = table2['unnorm']/table2['unnorm'].sum()\ntable2\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\nposterior\n\n\n\n\n6\n1/3\n1/6\n1/18\n4/9\n\n\n8\n1/3\n1/8\n1/24\n1/3\n\n\n12\n1/3\n1/12\n1/36\n2/9",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>贝叶斯公式之应用</span>"
+    ]
+  },
+  {
+    "objectID": "02_theorem.html#三重门",
+    "href": "02_theorem.html#三重门",
+    "title": "2  贝叶斯公式之应用",
+    "section": "2.4 三重门",
+    "text": "2.4 三重门\n假设你在参加一个电视节目。你面前是三扇门。其中一扇门后面是一辆法拉利，其余两扇门后面各是一只山羊。你随机挑一扇门，不管打开后是什么，都归你了。你当然希望后面是一辆法拉利。你随机挑了门 A，告诉了主持人，主持人打开了门 C，后面是一只山羊，主持人问你，你是坚持选择 A 还是换成 B。\n主持人通常这么行事：\n\n主持人总会打开一扇门，给你机会重新选择\n他从来不会打开有车的门\n如果你选择了有车的那扇门，他会从另外两扇门中随机选一扇门打开\n\n现在问你，汽车在门 A 和门 B 后的概率分别是多少？\n你可能会觉得各是 1/2，但其实不是。我们用贝叶斯来计算一下。\n因为我们要选择的是门，所以 hypothesis 是车在某门之后，故 prior 是 \\(p(车在某门之后)\\)：车在 A, B, C 之后。\nData: 主持人打开了 C，我们看到了一只山羊。\nLikelihood 是 \\(p(\\text{Data} | h)\\)。\nPosterior 是 \\(p(h | \\text{Data})\\)。\n记住 prior 是在我们什么都不知道、没有任何数据的情况下所做的预测。\n\ntable3 = pd.DataFrame(index = ['A', 'B', 'C'])\ntable3['prior'] = Fraction(1, 3)\ntable3\n\n\n\n\n\n\n\n\nprior\n\n\n\n\nA\n1/3\n\n\nB\n1/3\n\n\nC\n1/3\n\n\n\n\n\n\n\n我们来分析 Likelihood。Likelihood 指的是在某一 hypothesis 的情况下，这个 data 的概率。我们挨个分析。\n如果 hypothesis 是车在 A, 那么主持人打开 C 的概率是 \\(1/2\\)。\n如果 hypothesis 是车在 B，他必须给你选择的机会，但他不能打开 A，只能打开 C，所以这个 data 的概率是 1。\n如果 hypothesis 是车在 C，那么主持人打开 C 的概率是 0，因为他不能打开有车的那扇门。\n所以：\n\ntable3['likelihood'] = Fraction(1, 2), 1, 0\ntable3['unnorm'] = table3['prior'] * table3['likelihood']\ntable3['posterior'] = table3['unnorm']/(table3['unnorm'].sum())\ntable3\n\n\n\n\n\n\n\n\nprior\nlikelihood\nunnorm\nposterior\n\n\n\n\nA\n1/3\n1/2\n1/6\n1/3\n\n\nB\n1/3\n1\n1/3\n2/3\n\n\nC\n1/3\n0\n0\n0\n\n\n\n\n\n\n\n由此我们看到，车在 B 门之后的概率要更高。",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>贝叶斯公式之应用</span>"
+    ]
+  },
+  {
+    "objectID": "03_distributions.html",
+    "href": "03_distributions.html",
+    "title": "3  用分布来解决问题",
+    "section": "",
+    "text": "3.1 重拾红球与白球问题\n我们知道：\n\\[\\text{Posterior distribution} \\propto \\text{Prior distribution} \\times \\text{Likelihood distribution}\\]\n\\(\\propto\\) 意思是 proportional to，a 与 b 成比例。之所以「成比例」而不是「等于」是因为 prior 与 likelihood 相乘的结果是未标准化的 posterior。\n我们还拿 Section 2.1 用到的红球与白球来举例：\nimport numpy as np \nimport matplotlib.pyplot as plt\ndef normalize_array(arr):\n    return np.array([i/sum(arr) for i in arr])\nprior = np.array([0.5, 0.5])\nprior\n\narray([0.5, 0.5])\n# Likelihood: 某 hypothesis 的情况下，该 data 的概率\n# 在这里，hypothesis 是哪一个碗，data 是我们随机抽一个球，抽到了红球\nlikelihood_red = np.array([0.75, 0.5])\nposterior = normalize_array(prior * likelihood_red)\nposterior\n\narray([0.6, 0.4])\n现在我问你，假如我们把这颗红球放进去，在同一只碗中随机抽球，又抽到一颗红球，那这颗红球来自两只碗的概率分别是多少？\n我们先来看另一个不一样的：\n假如我们把这颗红球放进去，再随机拿一只碗，随机抽球，又抽到一颗红球，那这颗红球来自两只碗的概率分别是多少？因为是 随机 拿一只碗，那么这一次抽到红球的情况和第一次是一样的，prior 和 likelihood 是一样的，因此 posterior 也是一样的。\n但我们现在是在同一只碗中随机抽球，prior （碗是哪只碗）不再是对半开了。因为第一次抽完后，我们知道这颗红球来自碗一的概率是 \\(0.6\\)，来自碗二的概率是 \\(0.4\\)。\n第二次是在「同一只碗」中随机抽球，那这只碗是哪只碗，也就是 prior，是第一次抽中红球的 posterior。而第二次时的 likelihood 保持不变。\n因此：\nposterior *= likelihood_red\nposterior = normalize_array(posterior)\nposterior\n\narray([0.69230769, 0.30769231])\n好，我们继续。第三次，把球放回，在同一只碗 中继续抽，抽到一颗白球，那这颗白球分别来自两只碗的概率是多少？\n第三次的 prior 依然是「同一只碗」是哪只碗的问题，也就是第二次的 posterior。Likelihood 变了，变成了 likelihood_white。我们接着计算：\nlikelihood_white = np.array([0.25, 0.5])\nposterior *= likelihood_white\nposterior = normalize_array(posterior)\nposterior\n\narray([0.52941176, 0.47058824])",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>用分布来解决问题</span>"
+    ]
+  },
+  {
+    "objectID": "03_distributions.html#一百零一只碗",
+    "href": "03_distributions.html#一百零一只碗",
+    "title": "3  用分布来解决问题",
+    "section": "3.2 一百零一只碗",
+    "text": "3.2 一百零一只碗\n我们现在有 101 只碗，标号分别为 0 到 100\n\n碗 0 中 0% 是红球\n碗 1 中 1% 是红球\n碗 2 中 2% 是红球\n…\n碗 99 中 99% 是红球\n碗 100 中 100% 是红球\n\n每一只碗中不是红球就是白球。我们随机抽一只碗，从中随机抽一个球，抽到了一颗红球，请问这颗红球来自碗 \\(x\\) 的概率是多少？\n\n我们来分析：\n\nhypothesis: 碗 \\(x\\)\ndata: 随机抽一只碗，随机抽一颗球，抽到了红球\nprior: \\(p(h)\\)\nlikelihood: \\(p(d|h)\\)\nposterior: \\(p(h|d)\\)\n\n\nn = 101\n# uniform prior:\nall_ones = [1]*n\nprior = normalize_array(all_ones)\n# likelihood array:\nlikelihood_red = np.array([i/(n-1) for i in range(n)])\nposterior = normalize_array(prior * likelihood_red)\nposterior[0:5]\n\narray([0.        , 0.00019802, 0.00039604, 0.00059406, 0.00079208])\n\n\n\n\nCode\nx_axis = range(n)\nplt.scatter(x = x_axis, y = prior, \n            label=\"prior\", color=\"orange\", s = 2)\nplt.scatter(x = x_axis, y = posterior, \n            label=\"posterior\", color=\"steelblue\", s = 2)\nplt.xlabel(\"Bowl #\")\nplt.ylabel(\"Probability mass function\")\nplt.legend()\nplt.title(\"Posterior after one red ball\")\nplt.show()\n\n\n\n\n\n\n\n\n\n假如我们把红球放回，从 同一只碗 中再次随机抽球，我们又抽到了一颗红球，请问这第二颗红球来自碗 \\(x\\) 的概率是多少？\n\n\nCode\nposterior2 = normalize_array(posterior * likelihood_red)\nplt.scatter(x = x_axis, y = posterior2, \n            label=\"posterior2\", color=\"purple\", s = 2)\nplt.xlabel(\"Bowl #\")\nplt.ylabel(\"Probability mass function\")\nplt.legend()\nplt.title(\"Posterior after two red balls\")\nplt.show()\n\n\n\n\n\n\n\n\n\n接着，我们把红球放回，在同一只碗 中再次随机抽球，这次我们抽到了一颗白球，请问这第三颗白球来自碗 \\(x\\) 的概率是多少？\n这时的 prior 仍是关于「碗」的。这里说了是「同一只碗」，但我们并不确定同一只碗到底是哪只碗，这是由第二次抽取决定的。第二次的 posterior 就是我们这次的 prior。\n\n\nCode\nlikelihood_white = np.array([1 - x for x in likelihood_red])\nposterior3 = normalize_array(posterior2 * likelihood_white)\nplt.scatter(x = x_axis, y = posterior3, \n            label=\"posterior3\", color=\"green\", s = 2)\nplt.xlabel(\"Bowl #\")\nplt.ylabel(\"Probability mass function\")\nplt.legend()\nplt.title(\"Posterior after 2 red, 1 white\")\nplt.show()\n\n\n\n\n\n\n\n\n\n这里，PMF (probability mass function) 的最高点叫做 “maximum a posterior probability” (MAP).\n如果我们想知道这里的最高点是哪一只碗：\n\nmax_index = np.argmax(posterior3)\nprint(\"最高点出现在碗 #\", max_index)\n\n最高点出现在碗 # 67",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>用分布来解决问题</span>"
+    ]
+  },
+  {
+    "objectID": "03_distributions.html#顺序重要吗",
+    "href": "03_distributions.html#顺序重要吗",
+    "title": "3  用分布来解决问题",
+    "section": "3.3 顺序重要吗？",
+    "text": "3.3 顺序重要吗？\n我们看到 posterior3 是如此得出的：\nall_ones = [1]*n\nprior = normalize_array(all_ones)\nposterior = normalize_array(prior * likelihood_red)\nposterior2 = normalize_array(posterior * likelihood_red)\nposterior3 = normalize_array(posterior2 * likelihood_white)\n我们注意到每次我们都用到了 normalize_array()，但这大可不必，只需要最后一次即可。我们甚至连\nall_ones = [1]*n\nprior = normalize_array(all_ones)\n都没必要。\n这里 prior, likelihood_red, likelihood_white, 和每个 posterior 都是一组数 (array)。\n另外，如果抽到的顺序不是 红-红-白，而是白-红-红，结果会一样。\n总结来说，我们需要证明的是上面算出来的 posterior3 和下面算出来的应该是一样的：\nposterior3_new = all_ones * likelihood_white * likelihood_red * likelihood_red # 顺序变了\nposterior3_new = normalize_array(posterior3_new) # 只最后标准化一次，中间没有\n那我们就来看一下：\n\nposterior3[0:5]\n\narray([0.00000000e+00, 1.18811881e-05, 4.70447045e-05, 1.04770477e-04,\n       1.84338434e-04])\n\n\n\nposterior3_new = all_ones * likelihood_white * likelihood_red * likelihood_red \nposterior3_new = normalize_array(posterior3_new) \nposterior3_new[0:5]\n\narray([0.00000000e+00, 1.18811881e-05, 4.70447045e-05, 1.04770477e-04,\n       1.84338434e-04])\n\n\n\nsum(np.isclose(posterior3, posterior3_new)) == len(prior)\n\nTrue\n\n\n这就说明，顺序不重要：红-红-白 与 红-白-红、白-红-红 的结果是一样的。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>用分布来解决问题</span>"
+    ]
+  },
+  {
+    "objectID": "03_distributions.html#总结",
+    "href": "03_distributions.html#总结",
+    "title": "3  用分布来解决问题",
+    "section": "3.4 总结",
+    "text": "3.4 总结\n我们把一百零一只碗这个问题泛化一下。\n假设我们总共有 \\(n+1\\) 只碗：\n\n碗 0 中 0/n 是红球\n碗 1 中 1/n 是红球\n碗 2 中 2/n 是红球\n…\n碗 n 中 n/n 是红球\n\n每一只碗中不是红球就是白球，且每只碗中球的总数相同。我们随机取一只碗，有放回地在这只碗中抽取球。我们把事件 T 定义为：\n\n共抽取 m 次，其中抽中红球 r 次，白球 w 次\n\n那么事件 T 发生的概率是多少？\n\ndef update_bowls_pmf(n, r, w):\n    \"\"\"\n    n: 总共几只碗\n    r: 红球\n    w: 白球\n    \"\"\"\n    priors = np.array([1]*n)\n    priors = normalize_array(priors)\n    likelihood_red = np.array([i/(n-1) for i in range(n)])\n    likelihood_white = np.array([1- i for i in likelihood_red])\n    likelihood = {\n        \"red\": likelihood_red,\n        \"white\": likelihood_white\n    }\n    dataset = [\"red\"]*r + [\"white\"]*w\n    for data in dataset:\n        priors *= likelihood[data]\n        \n    posterior = normalize_array(priors)\n    return posterior\n\n\nnew_posterior = update_bowls_pmf(n=101, r=2, w=1)\nnew_posterior[0:5]\n\narray([0.00000000e+00, 1.18811881e-05, 4.70447045e-05, 1.04770477e-04,\n       1.84338434e-04])\n\n\n\n# 我们来检测一下 红-红-白 是否和最原始的计算结果一致：\nnew_posterior = update_bowls_pmf(n=101, r=2, w=1)\nsum(np.isclose(new_posterior, posterior3_new)) == len(prior)\n\nTrue",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>用分布来解决问题</span>"
+    ]
+  },
+  {
+    "objectID": "03_distributions.html#揭晓面纱",
+    "href": "03_distributions.html#揭晓面纱",
+    "title": "3  用分布来解决问题",
+    "section": "3.5 揭晓面纱",
+    "text": "3.5 揭晓面纱\n你可能会问，上面的方法有什么用。那我问你另一个问题。假设，我不告诉你这些碗，只说这些：\n\n从一只装有红球和白球的碗中，随机有放回地抽球，每次抽一颗，抽了三次，这三次的结果是：红球，红球，白球。请问这只碗中的红球比例最有可能是多少？\n\n你就会知道，上面的结果可以回答这个问题。\n当然你也可以如此解决：\n\ndef y(x):\n    # 假设红球比例是x\n    return x**2*(1-x)\n\n\nx = np.linspace(0, 1, 100)\nplt.plot(x, y(x))\nplt.xlabel(\"Proportion of red balls\")\nplt.ylabel(\"Probability that the above mentioned event occurred\")\nplt.xlim(0, 1)\nplt.show()\n\n\n\n\n\n\n\n\n\nfrom scipy.optimize import minimize_scalar\ndef y(x):\n    return -x**2*(1-x)\nresult = minimize_scalar(y, bounds=(0,1), method=\"bounded\")\nresult\n\n message: Solution found.\n success: True\n  status: 0\n     fun: -0.14814814814787028\n       x: 0.666666139518174\n     nit: 10\n    nfev: 10\n\n\n\n# 所以结果是：\nmax_value = -result.fun\noptimal_x = result.x \noptimal_x, max_value\n\n(0.666666139518174, 0.14814814814787028)\n\n\n也就是说，当红球比例是 \\(66.7\\%\\) （也就是 \\(\\frac{2}{3}\\)） 时，上述事件发生的概率最高。\n这和我们上面得到的 \\(67\\%\\) 是一个道理：这三颗球来自碗 67 的概率最高。这也就是说，这三颗球来自红球比例为 \\(67\\%\\) 的那只碗的概率最高。\n其实这和我们的直觉是一样的，因为三次的结果是两次为红球，那最有可能红球的比利是三分之二。",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>用分布来解决问题</span>"
+    ]
+  },
+  {
+    "objectID": "04_estimate_proportions.html",
+    "href": "04_estimate_proportions.html",
+    "title": "4  Prior Distributions 之选择",
+    "section": "",
+    "text": "4.1 不同的 Prior Distributions\n上面我们用到的是 uniform prior：\nCode\nn = 1001\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nx_axis = range(n)\nplt.scatter(x = x_axis, y = uniform, \n            label=\"prior\", color=\"orange\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"Uniform prior\")\nplt.show()\n但是该 prior 并不一定是 uniform 的，也可能是这样子：\nCode\nramp_up = np.arange(500)\nramp_down = np.arange(500, -1, -1)\nprior = np.append(ramp_up, ramp_down)\ntriangle = normalize_array(prior)\nplt.scatter(x = x_axis, y = triangle, \n            label=\"prior\", color=\"orange\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"Triangle prior\")\nplt.show()\n如果我们用如此的 prior，结果是什么呢：\n# 稍微修改一下之前的 update_coins_pmf 以便可以修改 prior \ndef update_coins_pmf(n, h, t, prior):\n    \"\"\"\n    n: 总共几枚硬币\n    h: 正面朝上\n    t: 背面朝上\n    prior: a normalized array\n    \"\"\"\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    likelihood_tail = np.array([1- i for i in likelihood_head])\n    likelihood = {\n        \"head\": likelihood_head,\n        \"tail\": likelihood_tail\n    }\n    dataset = [\"head\"]*h + [\"tail\"]*t\n    posterior = prior.copy()\n    for data in dataset:\n        posterior *= likelihood[data]\n    return normalize_array(posterior)\nn = 1001\nh = 140\nt = 110\nramp_up = np.arange(500)\nramp_down = np.arange(500, -1, -1)\nprior = np.append(ramp_up, ramp_down)\nprior = normalize_array(prior)\n\nposterior = update_coins_pmf(n, h, t, prior)\nCode\nplt.scatter(x = x_axis, y = posterior, \n            label=\"140 heads out of 250\", color=\"orange\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"Posterior distribution of triangle prior\")\nplt.legend()\nplt.show()\nmax_index = np.argmax(posterior)\nprint(\"最高点出现在 Coin #\", max_index)\n\n最高点出现在 Coin # 558\n我们看到和用 uniform prior 结果差不多。这说明什么？这说明数据够多的话，prior 对 posterior 的影响没那么大。\n但我们来个更极端的：随机 prior。\nrandom_prior_values = np.random.rand(n)\nrandom_prior = normalize_array(random_prior_values)\n\nposterior = update_coins_pmf(n, h, t, prior=random_prior)\nCode\nplt.scatter(x = x_axis, y = posterior, \n            label=\"140 heads out of 250\", color=\"orange\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"Posterior distribution of random prior\")\nplt.legend()\nplt.show()\nmax_index = np.argmax(posterior)\nprint(\"最高点出现在 Coin #\", max_index)\n\n最高点出现在 Coin # 565\n我们看到，其实结果依然没有太大的影响。这进一步说明「这说明数据够多的话，prior 对 posterior 的影响没那么大」。",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Prior Distributions 之选择</span>"
+    ]
+  },
+  {
+    "objectID": "04_estimate_proportions.html#batch-updating",
+    "href": "04_estimate_proportions.html#batch-updating",
+    "title": "4  Prior Distributions 之选择",
+    "section": "4.2 Batch updating",
+    "text": "4.2 Batch updating\n上面我们是一个数据点一个数据点地在更新 posterior：\nfor data in dataset:\n    posterior *= likelihood[data]\n我们之前证明过了，顺序不重要，那我们就把「随机抛掷 250 次，观测的结果是 140 次正面朝上，110 次背面朝上」当成一个单独的事件就好了。这个事件也就是 Data。\n我们来分析：\n\nhypothesis: 哪枚硬币\ndata: 随机抛掷 250 次，观测的结果是 140 次正面朝上，110 次背面朝上\nprior: \\(p(h)\\)\nlikelihood: \\(p(d|h)\\)\nposterior: \\(p(h|d)\\)\n\n我们现在要用 prior 和 likelihood 求得 posterior。Prior 我们有了，不管是最开始的 uniform prior 还是 triangle prior，其本质就是一个数组 (array) 而已。那我们如何得到 Likelihood 这一数组？需要用到 binomial distribution：\n\\[P(X = k) = \\binom{n}{k} p^k (1-p)^{n-k}\\]\n我们用 scipy.stats.binom。\nscipy.stats.binom.pmf(k, n, p)\n其中 k 是正面朝上的次数，n 是总攻抛掷的次数， p 是正面朝上的概率。需要注意的是，p 可以是一个数，也可以是一组数。当 p 是一个数时，其结果是一个数。当 p 是一组数时，结果是一组数。\n其实，这里的 \\(p\\) 就是 prior 这一数组\n\ndef update_binom(n, heads, tosses, prior):\n    \"\"\"\n    heads: number of heads \n    tosses: total tosses \n    prior: prior distribution; should be a empiricaldist.pmf object (a Series)\n    \"\"\"\n    # 0/n, 1/n, 2/n ...\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    coin_head_probabilities = likelihood_head\n    likelihood = binom.pmf(k = heads, n = tosses, p = coin_head_probabilities)\n    posterior = prior.copy()\n    posterior *= likelihood \n    return normalize_array(posterior)\n\n\n# n: number of coins\nn = 1001\ntosses = 250\n# number of heads out of 250 tosses\nheads = 140\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nposterior = update_binom(n, heads, tosses, uniform)\n\n\n\nCode\nplt.scatter(x = x_axis, y = posterior, \n            label=\"140 heads out of 250\", color=\"orange\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"Posterior distribution of a uniform prior\")\nplt.legend()\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Prior Distributions 之选择</span>"
+    ]
+  },
+  {
+    "objectID": "05_estimate_counts.html",
+    "href": "05_estimate_counts.html",
+    "title": "5  土豪结婚之估数字",
+    "section": "",
+    "text": "5.1 不同 prior\n我们试一下用随机的 prior。\nrandom_prior_values = np.random.rand(n)\nrandom_prior = normalize_array(random_prior_values)\nposterior = update_posterior(n, random_prior, data = 60)\ndraw_posterior(\n    posterior, 'Number of wedding cars', \n    c = 'purple', legend_text=\"posterior after seeing wedding car #60\")\n我们看到，结果不太一样。这说明，我们的数据不够，因此不同的 prior 导致 posterior 不同。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>土豪结婚之估数字</span>"
+    ]
+  },
+  {
+    "objectID": "05_estimate_counts.html#更多数据",
+    "href": "05_estimate_counts.html#更多数据",
+    "title": "5  土豪结婚之估数字",
+    "section": "5.2 更多数据",
+    "text": "5.2 更多数据\n假如我们有更多的数据，比如，我们知道不仅有 60 号车，我们还看到了 30 号和 90 号车。这就和我们第一次随机抽了一颗骰子，随机抛掷，见了 60。然后再次随机抛掷，30。再次随机抛掷，见了 90。这个问题和「一百零一只碗」类似。每次抛掷，我们重新计算 posterior。第二次的 prior 就是第一次的 posterior，但是 likelihood 每次有肯能不一样。\n假设 prior 不变的话，根据新数据计算出来的 posterior：\n\ndataset = [60, 30,90]\nposterior = prior.copy()\nfor data in dataset:\n    posterior = update_posterior(n, posterior, data=data)\ndraw_posterior(\n    posterior, 'Number of wedding cars', \n    c = 'purple', legend_text=\"posterior after wedding car #60, #30, and #90\")\n\n\n\n\n\n\n\n\n我们可以检测一下，再把 prior 改为随机的，看看结果如何：\n\ndataset = [60, 30,90]\nposterior = random_prior.copy()\nfor data in dataset:\n    posterior = update_posterior(n, posterior, data=data)\ndraw_posterior(\n    posterior, 'Number of wedding cars', \n    c = 'purple', legend_text=\"posterior after wedding car #60, #30, and #90\")\n\n\n\n\n\n\n\n\n我们看到，比上次只有一个数据点 (60) 的时候好一点，和 uniform prior 的结果更为接近。",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>土豪结婚之估数字</span>"
+    ]
+  },
+  {
+    "objectID": "min_max_mix.html",
+    "href": "min_max_mix.html",
+    "title": "6  Minimum, Maxium, and Mixture",
+    "section": "",
+    "text": "import numpy as np \nimport matplotlib.pyplot as plt \nimport pandas as pd\nfrom scipy.stats import binom \n\n我们先来看一下 Cumulative Distriburtion Function (CDF)，用我们在 Chapter 4 中的例子。\n\n\nCode\ndef normalize_array(arr):\n    return np.array([i/sum(arr) for i in arr])\n\ndef update_binom(heads, tosses, prior):\n    \"\"\"\n    heads: number of heads \n    tosses: total tosses \n    prior: prior distribution; should be a empiricaldist.pmf object (a Series)\n    \"\"\"\n    # 0/n, 1/n, 2/n ...\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    coin_head_probabilities = likelihood_head\n    likelihood = binom.pmf(k = heads, n = tosses, p = coin_head_probabilities)\n    posterior = prior.copy()\n    posterior *= likelihood \n    return normalize_array(posterior)\n\n# n: number of coins\nn = 1001\nx_axis = range(n)\ntosses = 250\n# number of heads out of 250 tosses\nheads = 140\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nposterior = update_binom(heads, tosses, uniform)\n\n\n\ndef get_cdf(arr):\n    \"\"\"Get cumulative distribution function\n    \"\"\"\n    total_sum = np.sum(arr)\n    res = []\n    sum = 0\n    for x in arr:\n        sum += x\n        # normaize to make sure the max in res is 1\n        res.append(sum/total_sum)\n    return res \n\n\ncdf = get_cdf(posterior)\n\n\n\nCode\nplt.step(x=x_axis, y=cdf, label=\"CDF\", color='orange', where='post')\n# plt.scatter(x=x_axis, y = cdf, label=\"CDF\", color = 'orange', s = 2)\nplt.scatter(x = x_axis, y = posterior, \n            label=\"PMF\", color=\"steelblue\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"CDF and PMF of posterior distribution of a uniform prior\")\nplt.legend()\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Learn Bayes",
+    "section": "",
+    "text": "说明\n本书用 Quarto 制作。用来记录我学习 http://allendowney.github.io/ThinkBayes2 的过程",
+    "crumbs": [
+      "说明"
+    ]
+  },
+  {
+    "objectID": "06_min_max_mix.html",
+    "href": "06_min_max_mix.html",
+    "title": "6  Minimum, Maxium, and Mixture",
+    "section": "",
+    "text": "6.1 Cumulative Distriburtion Function (CDF)\n我们先来看一下 Cumulative Distriburtion Function (CDF)，用我们在 Chapter 4 中的例子。\nCode\ndef normalize_array(arr):\n    return np.array([i/sum(arr) for i in arr])\n\ndef update_binom(heads, tosses, prior):\n    \"\"\"\n    heads: number of heads \n    tosses: total tosses \n    prior: prior distribution; should be a empiricaldist.pmf object (a Series)\n    \"\"\"\n    # 0/n, 1/n, 2/n ...\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    coin_head_probabilities = likelihood_head\n    likelihood = binom.pmf(k = heads, n = tosses, p = coin_head_probabilities)\n    posterior = prior.copy()\n    posterior *= likelihood \n    return normalize_array(posterior)\n\n# n: number of coins\nn = 1001\nx_axis = range(n)\ntosses = 250\n# number of heads out of 250 tosses\nheads = 140\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nposterior = update_binom(heads, tosses, uniform)\ndef get_cdf(arr):\n    \"\"\"Get cumulative distribution function\n    \"\"\"\n    total_sum = np.sum(arr)\n    res = []\n    sum = 0\n    for x in arr:\n        sum += x\n        # normaize to make sure the max in res is 1\n        res.append(sum/total_sum)\n    return res\ncdf = get_cdf(posterior)\nCode\nplt.step(x=x_axis, y=cdf, label=\"CDF\", color='orange', where='post')\n# plt.scatter(x=x_axis, y = cdf, label=\"CDF\", color = 'orange', s = 2)\nplt.scatter(x = x_axis, y = posterior, \n            label=\"PMF\", color=\"steelblue\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"CDF and PMF of posterior distribution of a uniform prior\")\nplt.legend()\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
+    ]
+  },
+  {
+    "objectID": "07_poisson_process.html",
+    "href": "07_poisson_process.html",
+    "title": "7  泊松过程",
+    "section": "",
+    "text": "7.1 Gamma 分布\n首先，我建议大家把我在博客讲过的 离散分布先理解透，特别是泊松分布那一部分。\n在泊松分布中我们讲到这样一个问题：\n我们用泊松分布模拟了中国队进 0-10 个球的概率：\n\\[\nP(X = k) = \\frac{\\lambda^k \\cdot e^{-\\lambda}}{k!}\n\\tag{7.1}\\]\nfrom scipy.stats import poisson\nimport numpy as np \nimport matplotlib.pyplot as plt \nimport pandas as pd \n\ndef normalize_array(arr):\n    return np.array([i/np.sum(arr) for i in arr])\n\nlam = 5\ndist = poisson(lam)\npmfs = [dist.pmf(i) for i in range(11)]\nCode\nx_axis = range(11)\nplt.bar(x_axis, pmfs, color='steelblue', label=r'Poisson distribution with `$\\lambda=5$`')\nplt.xlabel(\"Number of Goals (k)\")\nplt.ylabel(\"Probability Mass\")\nplt.title(f\"Poisson Distribution of Goals ($\\lambda=5$)\")\n\n\nText(0.5, 1.0, 'Poisson Distribution of Goals ($\\\\lambda=5$)')\n使用泊松分布，我们可以由 \\(\\lambda\\) 得知 \\(p(k)\\)，也就是 \\(P(k|\\lambda)\\)。那现在的问题是，我们如何求 \\(P(\\lambda | k)\\):\n根据贝叶斯定理：\n\\[\nP(\\lambda | k) = \\frac{P(\\lambda) P(k|\\lambda)}{P(k)}\n\\tag{7.2}\\]\n这里\n我们可以先忽略 \\(P(k)\\)，因为它只是为了让最后的结果之和为 1。\n\\(P(k|\\lambda)\\) 可以通过泊松分布来求得。现在比较难弄的是 \\(P(\\lambda)\\)，也就是我们还没看任何数据时对球队一般进球的预估。\n我们用 FIFA 的数据 (世界杯场均进分数据)：\ndf = pd.read_csv('public/data/fifa.csv')\ndf.head()\n\n\n\n\n\n\n\n\nyear\nlam\n\n\n\n\n0\n1930\n3.89\n\n\n1\n1934\n4.12\n\n\n2\n1938\n4.67\n\n\n3\n1950\n4.00\n\n\n4\n1954\n5.38\nCode\nplt.bar(df.year, df.lam, width=2.5)\nplt.xlabel(\"Year\")\nplt.ylabel(\"Average Goals per Match\")\nplt.title(\"Average Goals per Match at FIFA World Cups\")\nplt.grid(axis='y', linestyle='--', alpha=0.5)\nplt.show()\nnp.mean(df.lam)\n\n3.065909090909091\n我们看到一场球平均进 3 个球。那我们大概就有数了。但是 Prior 不能只是一个数，需要是一个分布，我们用 Gamma 分布来模拟。该分布有两个变量：\\(\\alpha\\) (shape) 和 \\(\\beta\\) (rate)。该分布的平均值为 \\(\\frac{\\alpha}{\\beta}\\)，Probability Density Function (PDF) 是\n\\[\nf(x) = \\frac{\\beta^{\\alpha}}{\\Gamma(\\alpha)} x^{\\alpha - 1} e^{-\\beta x}\n\\tag{7.3}\\]\n其中\n\\[\nx \\in (0, \\infty)\n\\]\n其中 \\(\\Gamma(\\alpha)\\) 的定义是：\n\\[\n\\Gamma(\\alpha) = \\int_0^{\\infty} x^{\\alpha - 1} e^{-x} \\, dx\n\\]\n\\(\\Gamma(\\alpha)\\) 其实是连乘 (factorial) 在非整数中的应用。如果 \\(n\\) 是整数，那\n\\[\\Gamma(n) = (n - 1)!\\]\n如果是非整数，比如 \\(0.5\\)，那就需要用上面的那个普遍公式。\n为什么用 Gamma 分布？\n所以以下就是 Prior:\nfrom scipy.stats import gamma\n\nalpha_prior = 3\n\n# assume it is almost impossible to score more than 10 \nlambdas = np.linspace(0, 10, 101)\ndelta_lambda = lambdas[1] - lambdas[0]\n\n# probability mass function\nprior_pmf = gamma(alpha_prior).pdf(lambdas)*delta_lambda\n\n# normalize the prior for visualization purposes\n# note that the posterior is the same whether we normalize prior or not\nprior_pmf = normalize_array(prior_pmf)\nnp.sum(prior_pmf)\n\n0.9999999999999997\nLikelihood，也就是已知 \\(\\lambda\\) 求 \\(k\\):\nk = 2\nlikelihood_pmf = poisson(lambdas).pmf(k)\nlikelihood_pmf[0:5]\n\narray([0.        , 0.00452419, 0.01637462, 0.03333682, 0.0536256 ])\n那求 Posterior 就是 Prior 和 Likelihood 这两个数列逐元素相乘，然后让最后的结果之和为1就可以：\nposterior = normalize_array(prior_pmf * likelihood_pmf)\nCode\nplt.scatter(x = lambdas, \n            y = prior_pmf, \n            s = 2, \n            color=\"grey\", \n            label=\"Prior\")\nplt.scatter(x = lambdas, \n            y = posterior, \n            s = 2, \n            color = \"orange\", \n            label=\"Posterior\")\nplt.xlabel(r\"$\\lambda$\")\nplt.ylabel(\"Probability Mass\")\nplt.legend()\nplt.title(r\"Prior and Posterior Distribution of $\\lambda$\")\n\n\nText(0.5, 1.0, 'Prior and Posterior Distribution of $\\\\lambda$')",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
+    ]
+  },
+  {
+    "objectID": "06_min_max_mix.html#mixture-distribution",
+    "href": "06_min_max_mix.html#mixture-distribution",
+    "title": "6  Minimum, Maxium, and Mixture",
+    "section": "6.2 Mixture Distribution",
+    "text": "6.2 Mixture Distribution\n假设袋子里有两种硬币 A 和 B。A 的数量占 60%。 硬币 A 的属性是，随机抛一下，正面朝上和背面朝上的概率都是 50%。硬币 B 的属性是，随机抛一下，正面朝上的概率是 70%，背面朝上的概率是 30%。\n现在问你，随机抽一枚硬币，随机抛一下，正面朝上的概率是多少？应该很容易算。\n\nheads_prob = np.array([0.5, 0.7])\nweights = np.array([0.6, 0.4])\nres = (heads_prob * weights).sum()\nres\n\n0.58\n\n\n所以正面朝上的概率是 58%。",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
+    ]
+  },
+  {
+    "objectID": "07_poisson_process.html#probability-of-superiority",
+    "href": "07_poisson_process.html#probability-of-superiority",
+    "title": "7  泊松过程",
+    "section": "7.2 Probability of Superiority",
+    "text": "7.2 Probability of Superiority\n\n德国男足最近的一场比赛射进 4 个球，巴西队最近一场比赛射进 2 个球。我们有多大信心说德国男足更强？\n\n我们首先要把各自队的 posterior 求出来：\n\ndef get_posterior_pmf(lambdas, k, prior_pmf):\n    likelihood_pmf = poisson(lambdas).pmf(k)\n    posterior = normalize_array(\n        prior_pmf * likelihood_pmf)\n    return posterior\n\n\nge_posterior_pmf = get_posterior_pmf(lambdas, 4, prior_pmf)\nbr_posterior_pmf = get_posterior_pmf(lambdas, 2, prior_pmf)\n\n\n\nCode\nplt.scatter(x = lambdas, \n            y = ge_posterior_pmf, \n            s = 2, \n            color=\"steelblue\", \n            label=\"Germany\")\nplt.scatter(x = lambdas, \n            y = br_posterior_pmf, \n            s = 2, \n            color = \"orange\", \n            label=\"Brazil\")\nplt.xlabel(r\"$\\lambda$\")\nplt.ylabel(\"Probability Mass\")\nplt.legend()\nplt.title(r\"Posterior Distribution\")\n\n\nText(0.5, 1.0, 'Posterior Distribution')\n\n\n\n\n\n\n\n\n\n这里 \\(\\lambda\\) 所代表的是一个国家队平均而言每场得多少分。\n总体思路是这样：德国队随机一个 \\(\\lambda\\)，巴西队也随机选一个，德国对应的 \\(\\lambda\\) 比巴西的大的概率。\n算法如下：\n\\[\nP(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}) = \\sum_{\\lambda_{\\text{Germany}}} \\sum_{\\lambda_{\\text{Brazil}}} P(\\lambda_{\\text{Germany}}) \\cdot P(\\lambda_{\\text{Brazil}}) \\cdot \\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}})\n\\]\n其中 \\(\\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}})\\) 是 Indicator function，如果 \\(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}\\) 则 \\(\\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}) = 1\\)，反之则为 0。\n\ntotal = 0\nfor i, lam_ge in enumerate(lambdas):\n    for j, lam_br in enumerate(lambdas):\n        if lam_ge &gt; lam_br:\n            total += ge_posterior_pmf[i] * br_posterior_pmf[j]\ntotal\n\n0.7152072603914539\n\n\n\n\n\n\n\n\nTip\n\n\n\n想一下下面这个想法为什么是错的：\nsum = 0\nfor i, lam in enumerate(lambdas):\n    if ge_posterior_pmf[i] &gt; br_posterior_pmf[i]:\n        sum += 1",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
+    ]
+  },
+  {
+    "objectID": "07_poisson_process.html#gamma-分布",
+    "href": "07_poisson_process.html#gamma-分布",
+    "title": "7  泊松过程",
+    "section": "",
+    "text": "中国男足队平均每场比赛进 5 个球 (请允许我在平行宇宙做一次梦)，请问下一场比赛中国进 2 个球的概率是多少\n\n\n\n\n\n\n\n中国队在一场球赛中进了 2 个球 (\\(k=2\\))，请问中国队平常一般进多少个球 (\\(\\lambda\\))？\n\n\n\n\n\n\\(k\\) 是数据\n\\(\\lambda\\) 是假设\n\\(P(\\lambda)\\) 是先验概率\n\\(P(k|\\lambda)\\) 是似然\n\n\n\n\n\n\n\n\nTip\n\n\n\n为什么我们可以忽略 \\(P(k)\\) 呢？因为它是一个常量：\n\\[\nP(k) = \\sum_{\\lambda} P(k|\\lambda) \\cdot P(\\lambda)\n\\]\n我们最后让 posteior 和为一的时候，也是要对所有的结果乘上一个常量。那我们最后再做就好，没有必要这时候乘。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n因为它的自变量是从 0 开始的。\n如果我们把 \\(\\beta\\) 预设为 1，那么就只剩下一个变量 \\(\\alpha\\)，这个就是上面算出来的 3 个球。\n结果符合现实情况。\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n注意，gamma(alpha_prior).pdf(lambdas) 算的是 PDF，要乘以间隔才是 PMF (probability mass function)。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
+    ]
+  },
+  {
+    "objectID": "07_poisson_process.html#conjugate-priors",
+    "href": "07_poisson_process.html#conjugate-priors",
+    "title": "7  泊松过程",
+    "section": "7.3 Conjugate Priors",
+    "text": "7.3 Conjugate Priors\n我们来讲一个很重要的概念：Conjugate priors，中文翻译成「共轭先验」。其所表达的意思是：Posterior Distribution 和 Prior Distribution 同属于一个 Distribution。因为我们的 prior 是 gamma distribution，那 posterior 也是，只是 shape (alpha) 和 rate (beta) 不同。\n我们具体来看一下。\n在公式 Equation 7.2 中，求先验概率 \\(P(\\lambda)\\) 我们需要用到 Equation 7.3，只需要把 \\(x\\) 换成 \\(\\lambda\\) 就可以。求似然 \\(P(k|\\lambda)\\) 我们用到 Equation 7.1。\n那 \\(P(\\lambda) P(k|\\lambda)\\) 就是代入具体的 \\(\\lambda\\)，把 Equation 7.3 和 Equation 7.1 相乘即可。\n相乘的结果是：\n\\[\n\\frac{\\lambda^k \\cdot e^{-\\lambda}}{k!} \\cdot \\frac{\\beta^{\\alpha}}{\\Gamma(\\alpha)} \\lambda^{\\alpha - 1} e^{-\\beta \\lambda} = \\frac{\\beta^\\alpha}{\\Gamma(\\alpha) k!} \\cdot \\lambda^{(\\alpha + k) - 1} e^{-(\\beta + 1) \\lambda}\n\\tag{7.4}\\]\n\\(\\frac{\\beta^{\\alpha}}{\\Gamma(\\alpha)}\\) 是一个常数，\\(k!\\) 也是一个常数。\n有这样一个知识：对于一个 Gamma 函数 \\(\\Gamma(\\alpha, \\frac{1}{\\beta})\\)，曲线下的面积（即分布的积分）为 1。 如果乘上一个常数，比如 \\(2 \\cdot \\Gamma(\\alpha, \\frac{1}{\\beta})\\)，该分布的形状保持不变，但曲线下的面积不再是 1，而是变为该常数的值。\n\n\nCode\nalpha_0 = 3\nbeta_0 = 2\nx = np.linspace(0, 10, 500)\ngamma_pdf = gamma.pdf(x, alpha_0, scale = 1/beta_0)\nscaled_gamma_pdf = 2 * gamma_pdf\n\nplt.figure(figsize=(10, 6))\nplt.plot(x, gamma_pdf, label='Gamma($\\\\alpha=3, \\\\beta=2$)', color='blue')\nplt.plot(x, scaled_gamma_pdf, \n         label='2 * Gamma($\\\\alpha=3, \\\\beta=2$)', \n         color='red', \n         linestyle='--')\nplt.axhline(0, color='gray', linestyle=':', linewidth=1)  \nplt.xlabel('$\\\\lambda$')\nplt.ylabel('Probability Density')\nplt.title('Original vs. Scaled Gamma Distribution')\nplt.legend()\nplt.show()\n\n\n\n\n\n\n\n\n\n那我们就可以理解，在 Gamma 分布中，\\(\\frac{\\beta^{\\alpha}}{\\Gamma(\\alpha)}\\) 的作用就是让积分为 1。\n为了得到 Posterior distribution, 我们要把所有的 \\(\\lambda\\) 代入 Equation 7.4，得到一串数字，最后我们要确保它们的和为 1。因此，虽然公式 Equation 7.4 中 和 Gamma 函数的不一样，但这个不重要，最后确保和为 1 的时候，它自动就变成了它该有的样子。\n因此我们就可以这么说：Posterior Distribution 也是一个 Gamma Distribution，其参数现在变成了 \\(\\alpha + k\\) 和 \\(\\beta + 1\\)：\n\\[\\lambda | k \\sim \\text{Gamma}(\\alpha + k, \\beta + 1)\\]\n代码：\n\ndef get_posterior_pmf_conjugate_prior(alpha_prior, beta_prior, k, lambdas):\n    \"\"\"Get posterior pmf through conjugate prior\n    \"\"\"\n    delta_lambda = lambdas[1] - lambdas[0]\n\n    alpha_post = alpha_prior + k\n    beta_post = beta_prior + 1\n\n    posterior_pdf = gamma(alpha_post, scale=1/beta_post).pdf(lambdas)\n    posterior_pmf = posterior_pdf*delta_lambda\n    posterior_pmf = normalize_array(posterior_pmf)\n    \n    return posterior_pmf\n\n\nge_posterior_pmf = get_posterior_pmf_conjugate_prior(\n    alpha_prior, 1, 4, lambdas)\nbr_posterior_pmf = get_posterior_pmf_conjugate_prior(\n    alpha_prior, 1, 2, lambdas)\n\n\n\nCode\nplt.scatter(x = lambdas, \n            y = ge_posterior_pmf, \n            s = 2, \n            color=\"steelblue\", \n            label=\"Germany\")\nplt.scatter(x = lambdas, \n            y = br_posterior_pmf, \n            s = 2, \n            color = \"orange\", \n            label=\"Brazil\")\nplt.xlabel(r\"$\\lambda$\")\nplt.ylabel(\"Probablity Mass\")\nplt.legend()\nplt.title(r\"Posterior Distribution\")\n\n\nText(0.5, 1.0, 'Posterior Distribution')\n\n\n\n\n\n\n\n\n\n我们看到这个结果和我们通过常规的 Prior 与 Likelihood 相乘所得到的结果是一样的。",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
+    ]
+  },
+  {
+    "objectID": "07_poisson_process.html#后验预测分布",
+    "href": "07_poisson_process.html#后验预测分布",
+    "title": "7  泊松过程",
+    "section": "7.4 后验预测分布",
+    "text": "7.4 后验预测分布\n我们来讲一下 Posterior predictive distribution (后验预测分布)。\n我们看到 Posterior distribution 中，X 轴是 \\(\\lambda\\)，其含义是平均而言。比如说，\\(\\lambda = 5\\) 代表的意思是这个球队如果比赛无数次，平均下来每场会进 5 个球。\n回到刚才的德国和巴西男足的叙事，我们现在如果问：\n\n两队现在马上要进行一场比赛，请问德国对获胜的概率是多少？\n\n请注意，我们现在已经不再是问 \\(\\lambda\\)，而是问具体的一场比赛中每队的进球数，也就是 \\(k\\)。\n还记得我们上面提到的吗？\n\\[\nP(k) = \\sum_{\\lambda} P(k|\\lambda) \\cdot P(\\lambda)\n\\]\n这里 \\(P(\\lambda)\\) 是 posterior distribution，\\(P(k|\\lambda)\\) 是泊松分布。\n\ndef post_predictive_dist(lambdas, posterior_pmfs):\n    \"\"\"compute posterior predictive distribution\n    Inputs:\n        - lambdas: an numpy array \n        - posterior_pmfs: a numpy array \n    Output:\n        - res: a dic where key is k and value is P(k)\n    \"\"\"\n    goals = range(int(max(lambdas)))\n    res = {}\n    for goal in goals:\n        total = 0 \n        for i, lam in enumerate(lambdas):\n            poisson_pmf = poisson(lam).pmf(goal)\n            posterior_pmf = posterior_pmfs[i]\n            total += poisson_pmf * posterior_pmf\n        res[goal] = total \n\n    normalized_values = normalize_array(np.array(list(res.values())))\n    for i, pair in enumerate(res):\n        res[i] = normalized_values[i]\n    return res\n\n\nge_res = post_predictive_dist(lambdas, ge_posterior_pmf)\nbr_res = post_predictive_dist(lambdas, br_posterior_pmf)\n\n\nsum(ge_res.values())\n\n1.0\n\n\n\n\nCode\ndef plot_post_pred_dist(res, cntry_name):\n    gaols = list(res.keys())\n    probs = list(res.values())\n    plt.figure(figsize=(8,5))\n    plt.bar(gaols, probs, color=\"skyblue\", edgecolor='black')\n    plt.xlabel(\"Number of Goals (k)\")\n    plt.ylabel(\"Probability Mass\")\n    plt.title(f\"Posterior Predictive Distribution of Goals for {cntry_name}\")\n    plt.show()\n\n\n\nplot_post_pred_dist(ge_res, 'Germany')\n\n\n\n\n\n\n\n\n\nplot_post_pred_dist(br_res, 'Brazil')\n\n\n\n\n\n\n\n\n下面我们计算一下在下一场比赛中德国队获胜的概率。\n总体思路是这样：德国队随机一个 \\(k\\)，巴西队也随机选一个，德国对应的 \\(k\\) 比巴西的大的概率。\n算法如下：\n\\[\nP(k_{\\text{Germany}} &gt; k_{\\text{Brazil}}) = \\sum_{k} P(k_{\\text{Germany}}) \\cdot P(k_{\\text{Brazil}}) \\cdot \\mathbb{I}(k_{\\text{Germany}} &gt; k_{\\text{Brazil}})\n\\]\n\ndef prob_win(res1, res2):\n    win_prob = 0\n    goals = list(res1.keys())\n    for goal1 in goals: \n        for goal2 in goals:\n            if goal1 &gt; goal2:\n                win_prob += res1[goal1] * res2[goal2]\n    return win_prob\n\n\nprob_win(ge_res, br_res)\n\n0.5582596630665152",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html",
+    "href": "12_classification.html",
+    "title": "8  分类",
+    "section": "",
+    "text": "8.1 数据\nfrom scipy.stats import multivariate_normal\nimport plotly.graph_objs as go\nimport plotly.io as pio\npio.renderers.default = \"notebook\"\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport seaborn as sns\nfrom scipy.stats import norm\nfrom collections import Counter \n\ndef normalize_array(arr):\n    return np.array([i/np.sum(arr) for i in arr])\n使用 scipy：\n可以得到正态分布 \\(\\mathcal{N}(\\text{loc}, \\text{scale}^2)\\) 在 \\(x\\) 的密度值。所以 loc 是 \\(\\mu\\)、scale 是 \\(\\sigma\\).\n我们这次需要再次用到 penguins 这个数据 (Gorman, Williams, and Fraser (2014))。\n我们需要确保 body_mass_g 不为空。\npenguins = sns.load_dataset(\"penguins\")\npenguins = penguins.dropna(subset=['body_mass_g'])\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nprint(penguins.shape)\n\n(342, 7)\n我们的目标是用下面的四个 predictors 来预测 species：\npredictors = list(penguins.columns[2:-1])\npredictors\n\n['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']\nspecies = penguins.species.unique()\nspecies\n\narray(['Adelie', 'Chinstrap', 'Gentoo'], dtype=object)\n我们先来看一下这四个自变量的分布：\nCode\n# &lt;!-- fig-penguin-distribution --&gt;\n\n# Set up the 2x2 grid for KDE plots\nfig, axes = plt.subplots(2, 2, figsize=(12, 10))\nfig.suptitle(\"KDE of Penguin Measurements by Species\", fontsize=16)\n\n# KDE plot 1: Body Mass\nsns.kdeplot(data=penguins, x=\"body_mass_g\", hue=\"species\", ax=axes[0, 0], fill=True)\naxes[0, 0].set_title(\"Body Mass Distribution\")\naxes[0, 0].set_xlabel(\"Body Mass (g)\")\naxes[0, 0].set_ylabel(\"Density\")\n\n# KDE plot 2: Flipper Length\nsns.kdeplot(data=penguins, x=\"flipper_length_mm\", hue=\"species\", ax=axes[0, 1], fill=True)\naxes[0, 1].set_title(\"Flipper Length Distribution\")\naxes[0, 1].set_xlabel(\"Flipper Length (mm)\")\naxes[0, 1].set_ylabel(\"Density\")\n\n# KDE plot 3: Bill Length\nsns.kdeplot(data=penguins, x=\"bill_length_mm\", hue=\"species\", ax=axes[1, 0], fill=True)\naxes[1, 0].set_title(\"Bill Length Distribution\")\naxes[1, 0].set_xlabel(\"Bill Length (mm)\")\naxes[1, 0].set_ylabel(\"Density\")\n\n# KDE plot 4: Bill Depth\nsns.kdeplot(data=penguins, x=\"bill_depth_mm\", hue=\"species\", ax=axes[1, 1], fill=True)\naxes[1, 1].set_title(\"Bill Depth Distribution\")\naxes[1, 1].set_xlabel(\"Bill Depth (mm)\")\naxes[1, 1].set_ylabel(\"Density\")\n\n# Adjust layout\nplt.tight_layout(rect=[0, 0, 1, 0.95])\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#数据",
+    "href": "12_classification.html#数据",
+    "title": "8  分类",
+    "section": "",
+    "text": "norm.pdf(x, loc, scale)",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#原理",
+    "href": "12_classification.html#原理",
+    "title": "8  分类",
+    "section": "8.2 原理",
+    "text": "8.2 原理\n我们想要的是 \\(P(\\text{Species}| \\text{Data})\\)，依据贝叶斯定理：\n\\[P(\\text{Species}| \\text{Data}) \\propto P(\\text{Species}) \\cdot P(\\text{Data}|\\text{Species})\\]\n这里 Data 可以是一组数，比如四个自变量的值，也可以是一个数，也就是一个自变量的值。我们先来处理只有一个数据点，也就是我们只知道一个自变量的情况。\n先来看 \\(P(\\text{Species})\\)，也就是先验概率：在我们什么数据都没有的情况下，预测三者的概率。\n第一个选择是 Uniform prior:\n\n# prior of species\nprior = dict(zip(species, np.array([1/3]*3)))\nprior \n\n{'Adelie': 0.3333333333333333,\n 'Chinstrap': 0.3333333333333333,\n 'Gentoo': 0.3333333333333333}\n\n\n第二个选择是 Empirical prior:\n\ntotal = len(penguins)\nempirical_prior = {\n    species: count/total for species, count in Counter(\n        penguins.species).items()}\nempirical_prior\n\n{'Adelie': 0.4415204678362573,\n 'Chinstrap': 0.19883040935672514,\n 'Gentoo': 0.35964912280701755}\n\n\n那如何求 \\(P(\\text{Data}|\\text{Species})\\)？\nData 是一个数字。比如，我们知道了 ‘flipper_length_mm’: 193。如何知道这个数字对于 ‘Adelie’ 来说，概率多大？\n通过上图 (KDE of Penguin Measurements by Species)，我们看到各个分布基本符合正态分布。那我们用 penguins 中 ‘Adelie’ 所有的 ‘flipper_length_mm’ 数据，计算出平均值和标准差，就可以估算出 ‘Adelie’ 之 ‘flipper_length_mm’ 的正态分布。对其他的 Species 也一样。这样，对于 ‘flipper_length_mm’: 193 我们就可以算出三个 Species 相对应的 Density，这就是似然。\n我们先来把所有的变量的参数算出来：\n\ndef get_all_dist(penguins, predictors):\n    res = {}\n    for s, group_data in penguins.groupby(\"species\"):\n        dic = {}\n        # res[s] = dic\n        for p in predictors:\n            dic[p] = {}\n            data = group_data[p]\n            mu = np.mean(data)\n            sigma = np.std(data)\n            dic[p]['mean'] = mu \n            dic[p]['sigma'] = sigma \n        res[s] = dic\n    return res\n\n\nlikelihood = get_all_dist(penguins, predictors)\nlikelihood\n\n{'Adelie': {'bill_length_mm': {'mean': 38.79139072847682,\n   'sigma': 2.654570977106625},\n  'bill_depth_mm': {'mean': 18.34635761589404, 'sigma': 1.2126144287882996},\n  'flipper_length_mm': {'mean': 189.95364238410596,\n   'sigma': 6.517767614763347},\n  'body_mass_g': {'mean': 3700.662251655629, 'sigma': 457.04517271224495}},\n 'Chinstrap': {'bill_length_mm': {'mean': 48.83382352941177,\n   'sigma': 3.314611604171021},\n  'bill_depth_mm': {'mean': 18.42058823529412, 'sigma': 1.1270156874957824},\n  'flipper_length_mm': {'mean': 195.8235294117647, 'sigma': 7.079259633253841},\n  'body_mass_g': {'mean': 3733.0882352941176, 'sigma': 381.4986213564681}},\n 'Gentoo': {'bill_length_mm': {'mean': 47.50487804878048,\n   'sigma': 3.0693039294185516},\n  'bill_depth_mm': {'mean': 14.98211382113821, 'sigma': 0.9772229210631793},\n  'flipper_length_mm': {'mean': 217.1869918699187,\n   'sigma': 6.4585603287620605},\n  'body_mass_g': {'mean': 5076.016260162602, 'sigma': 502.0628014961637}}}\n\n\n然后，先验与似然相乘，再标准化 (Normalize) 一下，就是 Posterior 了：\n\ndef update_post(varname, varvalue, prior, likelihood):\n    res = {}\n    for s, s_prior in prior.items():\n        mu = likelihood[s][varname]['mean']\n        sigma = likelihood[s][varname]['sigma']\n        pdf = norm.pdf(varvalue, loc = mu, scale = sigma)\n        res[s] = s_prior * pdf \n    \n    normalized_res_values = normalize_array(np.array(list(res.values())))\n    res = dict(zip(res.keys(), normalized_res_values))\n    return res \n\n\npost_flipper = update_post('flipper_length_mm', 193, prior, likelihood)\npost_flipper\n\n{'Adelie': 0.5129670276270746,\n 'Chinstrap': 0.48651288781448715,\n 'Gentoo': 0.0005200845584382924}\n\n\n我们看到，结果显示，在 flipper_length_mm’: 193 这一数据下，结果几乎不可能是 Gentoo，但我们没办法确认到底是 Adelie 还是 Chinstrap，这一点从上图中也可以反映出来。\n那如果我们有另外一个数据呢？比如，‘bill_length_mm’:48。我们依然可以用先验与似然相乘。但是这里要注意的是，这里的先验是我们上面的结果，post_flipper:\n\npost_flipper_bill_length = update_post(\n    'bill_length_mm', 48, post_flipper, likelihood)\npost_flipper_bill_length\n\n{'Adelie': 0.003297190719649734,\n 'Chinstrap': 0.9955319128234549,\n 'Gentoo': 0.0011708964568953224}\n\n\n我们看到，几乎可以肯定是 ‘Chinstrap’。\n那我们来看一下如何直接使用多个数据：\n\ndata = {\n    'flipper_length_mm': 193, \n    'bill_length_mm': 48\n}\n\n\ndef update_naive(data, prior, likelihood):\n    posterior = prior.copy()\n    for varname, varvalue in data.items():\n        posterior = update_post(varname, varvalue, posterior, likelihood)\n    return posterior\n\n\nres = update_naive(data, prior, likelihood)\nres \n\n{'Adelie': 0.003297190719649734,\n 'Chinstrap': 0.9955319128234549,\n 'Gentoo': 0.0011708964568953224}\n\n\n结果和上面一样。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "引用",
+    "section": "",
+    "text": "Gorman, Kristen B, Tony D Williams, and William R Fraser. 2014.\n“Ecological Sexual Dimorphism and Environmental Variability Within\na Community of Antarctic Penguins (Genus Pygoscelis).” PloS\nOne 9 (3): e90081.",
+    "crumbs": [
+      "引用"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#朴素贝叶斯分类",
+    "href": "12_classification.html#朴素贝叶斯分类",
+    "title": "8  分类",
+    "section": "8.3 朴素贝叶斯分类",
+    "text": "8.3 朴素贝叶斯分类\n接下来，我们对 penguins 中每一行进行预测：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification'].notna()\nvalid.sum()\n\n342\n\n\n\nsame = penguins['species'] == penguins['Classification']\nsame.sum()\n\n331\n\n\n\nsame.sum() / valid.sum()\n\n0.9678362573099415\n\n\n我们再来看一下如果用 Empirical prior 结果会如何：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, empirical_prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred\n\nvalid = penguins['Classification'].notna()\nsame = penguins['species'] == penguins['Classification']\nsame.sum() / valid.sum()\n\n0.9707602339181286\n\n\n我们看到用 Empirical prior 的结果更好一些。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#多元正态分布",
+    "href": "12_classification.html#多元正态分布",
+    "title": "8  分类",
+    "section": "8.5 多元正态分布",
+    "text": "8.5 多元正态分布\n如果两个变量完全不相关，结果会是这样：\n\nnp.random.seed(0)\nx = np.random.rand(200)\ny = np.random.rand(200)\n\nplt.figure(figsize=(8,6))\nplt.scatter(x, y, alpha = 0.7)\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot of Two Uncorrelated Variables')\nplt.show()\n\n\n\n\n\n\n\n\n\n\nCode\ndef scatterplot(df, var1, var2):\n    plt.figure(figsize=(10,8))\n    sns.scatterplot(\n        data = df,\n        x = var1, \n        y = var2, \n        hue='species',\n        palette='colorblind',\n        s = 100, \n        alpha = 0.7\n    )\n    plt.xlim(0)\n    plt.ylim(0)\n    plt.axis(\"equal\")\n    plt.xlabel(var1)\n    plt.ylabel(var2)\n    plt.title(f'Scatter Plot of {var1} vs. {var2} by Species')\n    plt.legend(title = \"Species\")\n    plt.show()\n\n\n\nscatterplot(penguins, predictors[2], predictors[0])\n\n\n\n\n\n\n\n\n我们看到对于每一个 Species 来说，这两个变量很明显是相关的，而不是完全不相关。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#联合分布-join-distribution",
+    "href": "12_classification.html#联合分布-join-distribution",
+    "title": "8  分类",
+    "section": "8.4 联合分布 (Join Distribution)",
+    "text": "8.4 联合分布 (Join Distribution)\n现在我们来反思一下。如果我们的数据是 \\(X_1, X_2, ..., X_n\\)，某一 Species 我们记为 \\(C\\)。那根据最基本的概率知识，我们也知道，如果 \\(X_1, X_2, ..., X_n\\) 之间彼此独立，那么：\n\\[P(X_1, X_2, ..., X_n|C) = P(X_1|C) \\cdot P(X_2|C) \\cdots P(X_n|C)\\]\n所以：\n\\[\nP(C|X_1, X_2, ..., X_n) \\propto P(C) \\cdot P(X_1, X_2, ..., X_n|C)\n\\tag{8.1}\\]\n但问题是，「\\(X_1, X_2, ..., X_n\\) 之间彼此独立」这一点未必站得住脚。\n如果两个变量完全不相关，结果会是这样：\n\n\n\nCode\nnp.random.seed(0)\nx = np.random.rand(200)\ny = np.random.rand(200)\n\nplt.figure(figsize=(8,6))\nplt.scatter(x, y, alpha = 0.7)\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot of Two Uncorrelated Variables')\nplt.show()\n\n\n\n\n\n\n\n\n\n但是在 penguins 这一数据中，我们拿 flipper_length_mm 和 bill_length_mm 来举例子：\n\n\nCode\ndef scatterplot(df, var1, var2):\n    plt.figure(figsize=(10,8))\n    sns.scatterplot(\n        data = df,\n        x = var1, \n        y = var2, \n        hue='species',\n        palette='colorblind',\n        s = 100, \n        alpha = 0.7\n    )\n    plt.xlim(0)\n    plt.ylim(0)\n    plt.axis(\"equal\")\n    plt.xlabel(var1)\n    plt.ylabel(var2)\n    plt.title(f'Scatter Plot of {var1} vs. {var2} by Species')\n    plt.legend(title = \"Species\")\n    plt.show()\n\n\n\nscatterplot(penguins, predictors[2], predictors[0])\n\n\n\n\n\n\n\n\n很明显，对于每一个 Species 来说，这两个变量很明显是相关的，而不是完全不相关。\n那对于两个相关的变量\n\\[P(X_1, X_2|C) = P(X_1|C) \\cdot P(X_2|C)\\]\n并不成立。正确的计算方法是：\n\\[P(X_1, X_2|C) = P(X_1|C) \\cdot P(X_2|X_1, C)\\]\n我们来举一个例子：\n\n\\(S\\): 夏天\n\\(W\\): 晴天 (1) 还是阴天 (0)\n\\(H\\)；喝热饮 (1)或者不喝 (0)\n\n我们现在知道：\n\n\\(P(W=1|S) = 0.7\\)\n\\(P(W=0|S) = 0.3\\)\n\\(P(H=1 | W=1, S) = 0.2\\)\n\\(P(H=1 | W=0, S) = 0.6\\)\n\n这里首先要立即，夏天+天晴的时候喝热饮 和 夏天+阴天的时候喝热饮 这两者是相互独立的，两者相加之和并不保证为 1。\n现在我们首先来看一下如何计算 \\(P(H=1|S)\\):\n\\[P(H=1 | W=1, S) \\cdot P(W=1|S) + P(H=1 | W=0, S) * P(W=0|S) = 0.32\\]\n\n0.7*0.2 + 0.3*0.6\n\n0.31999999999999995\n\n\n我们现在知道了\n\n\\(P(H=1|S) = 0.32\\)\n\n我们现在想看看\n\\[P(H=1,W=1|S) = P(W=1|S) \\cdot P(H=1|S)\\]\n和\n\\[P(H=1,W=1|S) = P(W=1|S) \\cdot P(H=1|W=1, S)\\]\n这两个到底哪个对。\n我们用编程来模拟一万天的记录：\n\n\nCode\nn_samples = 10**4\n\np_sunny_given_summer = 0.7\np_drink_given_sunny = 0.2\np_drink_given_cloudy = 0.6\n\nweather = np.random.choice(\n    [1,0], \n    size = n_samples, \n    p = [p_sunny_given_summer, \n         1- p_sunny_given_summer]\n)\n\ndrink = np.zeros(n_samples)\ndrink[weather == 1] = np.random.choice(\n    [1,0], size = (weather==1).sum(), \n    p=[p_drink_given_sunny, 1-p_drink_given_sunny])\ndrink[weather == 0] = np.random.choice(\n    [1,0], size = (weather==0).sum(), \n    p=[p_drink_given_cloudy, 1-p_drink_given_cloudy])\n\njoint_prob_actual = ((weather==1) & (drink==1)).sum() / n_samples\n\nprint(f\"夏天晴天且喝热饮的真实概率是 {joint_prob_actual}。\")\n\np_h_given_s = drink.sum()/n_samples\np_w_given_s = p_sunny_given_summer\njoint_prob_independence = p_w_given_s * p_h_given_s\nprint(f\"用 P(W=1 | S) * P(H=1 | S) 算出的结果是: {joint_prob_independence}\")\n\njoint_prob_correct = p_w_given_s * p_drink_given_sunny\nprint(f\"用 P(W=1 | S) * P(H=1 | W=1, S) 算出的结果是: {joint_prob_correct}\")\n\n\n夏天晴天且喝热饮的真实概率是 0.1469。\n用 P(W=1 | S) * P(H=1 | S) 算出的结果是: 0.22518999999999997\n用 P(W=1 | S) * P(H=1 | W=1, S) 算出的结果是: 0.13999999999999999\n\n\n所以\n\\[P(H=1,W=1|S) = P(W=1|S) \\cdot P(H=1|W=1, S)\\]\n才是正确的做法。\n回到 penguins 这个数据，因为自变量之间并非相互独立，正确的计算方法是\n\\[P(X_1, X_2, ..., X_n|C) =  P(X_1|C) \\cdot P(X_2|X_1, C) \\cdots P(X_n|X_1, X_2, ... X_{n-1}, C)\n\\tag{8.2}\\]\n我们把 \\(P(X_1, X_2, ..., X_n|C)\\) 称为联合概率密度 (Joint probability density) 或者简称为联合密度 (Joint density)。\n如果我们只有两个自变量。那密度值是 Z 轴的取值。密度的积分为 1。\n\n\nCode\n# Define mean and covariance for a bivariate normal distribution\nmean = [0, 0]  # Centered at origin\ncovariance = [[1, 0.5], [0.5, 1]]  # Covariance matrix with some correlation\n\n# Create a grid of points in the x and y range\nx = np.linspace(-3, 3, 100)\ny = np.linspace(-3, 3, 100)\nX, Y = np.meshgrid(x, y)\npos = np.dstack((X, Y))\n\n# Calculate the bivariate normal density at each grid point\nrv = multivariate_normal(mean, covariance)\nZ = rv.pdf(pos)\n\n# Plotting the density function\n\nfig = plt.figure(figsize=(10, 7))\nax = fig.add_subplot(111, projection='3d')\n\n# Surface plot\nax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none', alpha=0.7)\n\n# Labels and title\nax.set_xlabel('X1')\nax.set_ylabel('X2')\nax.set_zlabel('Density')\nax.set_title('Bivariate Normal Distribution Density')\nplt.show()\n\n# # Generate the 3D surface plot using Plotly\n# surface = go.Surface(x=X, y=Y, z=Z, colorscale='Viridis')\n# layout = go.Layout(\n#     title=\"Bivariate Normal Distribution Density (3D Surface)\",\n#     scene=dict(\n#         xaxis_title=\"X1\",\n#         yaxis_title=\"X2\",\n#         zaxis_title=\"Density\"\n#     )\n# )\n# fig = go.Figure(data=[surface], layout=layout)\n\n# # Display the interactive plot\n# fig.show()\n\n\n\n\n\n\n\n\n\n我们暂时不去推导具体的公式。目前我们只需要知道，如果有四个自变量 \\(X_1, X_2, X_3, X_4\\)，「均值向量」是 mean_vector，「协方差矩阵」为 covariance_matrix。给定具体的数据 data。那么\nfrom scipy.stats import multivariate_normal\nrv = multivariate_normal(mean=mean_vector, cov=covariance_matrix)\nZ = rv.pdf(data)\n便可计算联合概率密度，也就是 \\(P(X_1, X_2, ..., X_n|C)\\)。\n在这种情况下，四个变量构成了四个相互不独立的高斯分布。由此产生的多变量分布称为「多元正态分布」(multivariate normal distribution)。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#多元正态分布-multivariate-normal-distribution",
+    "href": "12_classification.html#多元正态分布-multivariate-normal-distribution",
+    "title": "8  分类",
+    "section": "8.5 多元正态分布 (Multivariate Normal Distribution)",
+    "text": "8.5 多元正态分布 (Multivariate Normal Distribution)\n如果两个变量完全不相关，结果会是这样：\n\nnp.random.seed(0)\nx = np.random.rand(200)\ny = np.random.rand(200)\n\nplt.figure(figsize=(8,6))\nplt.scatter(x, y, alpha = 0.7)\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot of Two Uncorrelated Variables')\nplt.show()\n\n\n\n\n\n\n\n\n\n\nCode\ndef scatterplot(df, var1, var2):\n    plt.figure(figsize=(10,8))\n    sns.scatterplot(\n        data = df,\n        x = var1, \n        y = var2, \n        hue='species',\n        palette='colorblind',\n        s = 100, \n        alpha = 0.7\n    )\n    plt.xlim(0)\n    plt.ylim(0)\n    plt.axis(\"equal\")\n    plt.xlabel(var1)\n    plt.ylabel(var2)\n    plt.title(f'Scatter Plot of {var1} vs. {var2} by Species')\n    plt.legend(title = \"Species\")\n    plt.show()\n\n\n\nscatterplot(penguins, predictors[2], predictors[0])\n\n\n\n\n\n\n\n\n我们看到对于每一个 Species 来说，这两个变量很明显是相关的，而不是完全不相关。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
+    "href": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
+    "title": "8  分类",
+    "section": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)",
+    "text": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)\n接下来，我们对 penguins 中每一行进行预测：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification'].notna()\nvalid.sum()\n\n342\n\n\n\nsame = penguins['species'] == penguins['Classification']\nsame.sum()\n\n331\n\n\n\nsame.sum() / valid.sum()\n\n0.9678362573099415\n\n\n我们再来看一下如果用 Empirical prior 结果会如何：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, empirical_prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred\n\nvalid = penguins['Classification'].notna()\nsame = penguins['species'] == penguins['Classification']\nsame.sum() / valid.sum()\n\n0.9707602339181286\n\n\n我们看到用 Empirical prior 的结果更好一些。",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "12_classification.html#使用多元正态分布",
+    "href": "12_classification.html#使用多元正态分布",
+    "title": "8  分类",
+    "section": "8.5 使用多元正态分布",
+    "text": "8.5 使用多元正态分布\n接下来，我们使用多元正态分布来做分类。\n我们首先对不同的 Species 计算出相对应的均值向量和协方差矩阵：\n\nmean_cov_dic = {} # key is species and value is mean and cov\nfor s, group in penguins.groupby('species'):\n    mean_vector = group[predictors].mean().values\n    covariance_matrix = group[predictors].cov().values \n    mean_cov_dic[s] = {\n        'mean': mean_vector,\n        'cov': covariance_matrix\n    }\n\n然后我们把 Equation 8.1 和 Equation 8.2 联合起来用。\n\ndef update_multivarate_normal(data, prior, mean_cov_dic):\n    res = {}\n    for s, s_prior in prior.items():\n        mean_vector = mean_cov_dic[s]['mean']\n        covariance_matrix = mean_cov_dic[s]['cov']\n        rv = multivariate_normal(mean=mean_vector, cov=covariance_matrix)\n        z = rv.pdf(data)\n        res[s] = s_prior * z \n    normalized_res_values = normalize_array(np.array(list(res.values())))\n    res = dict(zip(res.keys(), normalized_res_values))\n    return res \n\n\npenguins['Classification2'] = 'None'\nfor i, row in penguins.iterrows():\n    data = row[predictors]\n    res = update_multivarate_normal(data, prior, mean_cov_dic)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification2'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\nClassification2\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification2'].notna()\nsame = penguins['species'] == penguins['Classification2']\nsame.sum() / valid.sum()\n\n0.9912280701754386\n\n\n我们可以看到准确里提高到了 99%。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  }
+]

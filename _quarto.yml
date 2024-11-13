@@ -1,0 +1,27 @@
+project:
+  type: book
+
+book:
+  title: "Learn Bayes"
+  author: "郝鸿涛"
+  date: "11/7/2024"
+  chapters:
+    - index.qmd
+    - 01_prob.ipynb
+    - 02_theorem.ipynb
+    - 03_distributions.ipynb
+    - 04_estimate_proportions.ipynb
+    - 05_estimate_counts.ipynb
+    - 06_min_max_mix.ipynb
+    - 07_poisson_process.ipynb
+    - 12_classification.ipynb
+    - references.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+
+
+
