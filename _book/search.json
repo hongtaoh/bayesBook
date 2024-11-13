@@ -170,31 +170,21 @@
     ]
   },
   {
-    "objectID": "min_max_mix.html",
-    "href": "min_max_mix.html",
-    "title": "6  Minimum, Maxium, and Mixture",
-    "section": "",
-    "text": "import numpy as np \nimport matplotlib.pyplot as plt \nimport pandas as pd\nfrom scipy.stats import binom \n\n我们先来看一下 Cumulative Distriburtion Function (CDF)，用我们在 Chapter 4 中的例子。\n\n\nCode\ndef normalize_array(arr):\n    return np.array([i/sum(arr) for i in arr])\n\ndef update_binom(heads, tosses, prior):\n    \"\"\"\n    heads: number of heads \n    tosses: total tosses \n    prior: prior distribution; should be a empiricaldist.pmf object (a Series)\n    \"\"\"\n    # 0/n, 1/n, 2/n ...\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    coin_head_probabilities = likelihood_head\n    likelihood = binom.pmf(k = heads, n = tosses, p = coin_head_probabilities)\n    posterior = prior.copy()\n    posterior *= likelihood \n    return normalize_array(posterior)\n\n# n: number of coins\nn = 1001\nx_axis = range(n)\ntosses = 250\n# number of heads out of 250 tosses\nheads = 140\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nposterior = update_binom(heads, tosses, uniform)\n\n\n\ndef get_cdf(arr):\n    \"\"\"Get cumulative distribution function\n    \"\"\"\n    total_sum = np.sum(arr)\n    res = []\n    sum = 0\n    for x in arr:\n        sum += x\n        # normaize to make sure the max in res is 1\n        res.append(sum/total_sum)\n    return res \n\n\ncdf = get_cdf(posterior)\n\n\n\nCode\nplt.step(x=x_axis, y=cdf, label=\"CDF\", color='orange', where='post')\n# plt.scatter(x=x_axis, y = cdf, label=\"CDF\", color = 'orange', s = 2)\nplt.scatter(x = x_axis, y = posterior, \n            label=\"PMF\", color=\"steelblue\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"CDF and PMF of posterior distribution of a uniform prior\")\nplt.legend()\nplt.show()",
-    "crumbs": [
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Learn Bayes",
-    "section": "",
-    "text": "说明\n本书用 Quarto 制作。用来记录我学习 http://allendowney.github.io/ThinkBayes2 的过程",
-    "crumbs": [
-      "说明"
-    ]
-  },
-  {
     "objectID": "06_min_max_mix.html",
     "href": "06_min_max_mix.html",
     "title": "6  Minimum, Maxium, and Mixture",
     "section": "",
     "text": "6.1 Cumulative Distriburtion Function (CDF)\n我们先来看一下 Cumulative Distriburtion Function (CDF)，用我们在 Chapter 4 中的例子。\nCode\ndef normalize_array(arr):\n    return np.array([i/sum(arr) for i in arr])\n\ndef update_binom(heads, tosses, prior):\n    \"\"\"\n    heads: number of heads \n    tosses: total tosses \n    prior: prior distribution; should be a empiricaldist.pmf object (a Series)\n    \"\"\"\n    # 0/n, 1/n, 2/n ...\n    likelihood_head = np.array([i/(n-1) for i in range(n)])\n    coin_head_probabilities = likelihood_head\n    likelihood = binom.pmf(k = heads, n = tosses, p = coin_head_probabilities)\n    posterior = prior.copy()\n    posterior *= likelihood \n    return normalize_array(posterior)\n\n# n: number of coins\nn = 1001\nx_axis = range(n)\ntosses = 250\n# number of heads out of 250 tosses\nheads = 140\nprior = np.array([1]*n)\nuniform = normalize_array(prior)\nposterior = update_binom(heads, tosses, uniform)\ndef get_cdf(arr):\n    \"\"\"Get cumulative distribution function\n    \"\"\"\n    total_sum = np.sum(arr)\n    res = []\n    sum = 0\n    for x in arr:\n        sum += x\n        # normaize to make sure the max in res is 1\n        res.append(sum/total_sum)\n    return res\ncdf = get_cdf(posterior)\nCode\nplt.step(x=x_axis, y=cdf, label=\"CDF\", color='orange', where='post')\n# plt.scatter(x=x_axis, y = cdf, label=\"CDF\", color = 'orange', s = 2)\nplt.scatter(x = x_axis, y = posterior, \n            label=\"PMF\", color=\"steelblue\", s = 2)\nplt.xlabel(\"Coin #\")\nplt.ylabel(\"Probability mass function\")\nplt.title(\"CDF and PMF of posterior distribution of a uniform prior\")\nplt.legend()\nplt.show()",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
+    ]
+  },
+  {
+    "objectID": "06_min_max_mix.html#mixture-distribution",
+    "href": "06_min_max_mix.html#mixture-distribution",
+    "title": "6  Minimum, Maxium, and Mixture",
+    "section": "6.2 Mixture Distribution",
+    "text": "6.2 Mixture Distribution\n假设袋子里有两种硬币 A 和 B。A 的数量占 60%。 硬币 A 的属性是，随机抛一下，正面朝上和背面朝上的概率都是 50%。硬币 B 的属性是，随机抛一下，正面朝上的概率是 70%，背面朝上的概率是 30%。\n现在问你，随机抽一枚硬币，随机抛一下，正面朝上的概率是多少？应该很容易算。\n\nheads_prob = np.array([0.5, 0.7])\nweights = np.array([0.6, 0.4])\nres = (heads_prob * weights).sum()\nres\n\n0.58\n\n\n所以正面朝上的概率是 58%。",
     "crumbs": [
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
     ]
@@ -210,13 +200,13 @@
     ]
   },
   {
-    "objectID": "06_min_max_mix.html#mixture-distribution",
-    "href": "06_min_max_mix.html#mixture-distribution",
-    "title": "6  Minimum, Maxium, and Mixture",
-    "section": "6.2 Mixture Distribution",
-    "text": "6.2 Mixture Distribution\n假设袋子里有两种硬币 A 和 B。A 的数量占 60%。 硬币 A 的属性是，随机抛一下，正面朝上和背面朝上的概率都是 50%。硬币 B 的属性是，随机抛一下，正面朝上的概率是 70%，背面朝上的概率是 30%。\n现在问你，随机抽一枚硬币，随机抛一下，正面朝上的概率是多少？应该很容易算。\n\nheads_prob = np.array([0.5, 0.7])\nweights = np.array([0.6, 0.4])\nres = (heads_prob * weights).sum()\nres\n\n0.58\n\n\n所以正面朝上的概率是 58%。",
+    "objectID": "07_poisson_process.html#gamma-分布",
+    "href": "07_poisson_process.html#gamma-分布",
+    "title": "7  泊松过程",
+    "section": "",
+    "text": "中国男足队平均每场比赛进 5 个球 (请允许我在平行宇宙做一次梦)，请问下一场比赛中国进 2 个球的概率是多少\n\n\n\n\n\n\n\n中国队在一场球赛中进了 2 个球 (\\(k=2\\))，请问中国队平常一般进多少个球 (\\(\\lambda\\))？\n\n\n\n\n\n\\(k\\) 是数据\n\\(\\lambda\\) 是假设\n\\(P(\\lambda)\\) 是先验概率\n\\(P(k|\\lambda)\\) 是似然\n\n\n\n\n\n\n\n\nTip\n\n\n\n为什么我们可以忽略 \\(P(k)\\) 呢？因为它是一个常量：\n\\[\nP(k) = \\sum_{\\lambda} P(k|\\lambda) \\cdot P(\\lambda)\n\\]\n我们最后让 posteior 和为一的时候，也是要对所有的结果乘上一个常量。那我们最后再做就好，没有必要这时候乘。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n因为它的自变量是从 0 开始的。\n如果我们把 \\(\\beta\\) 预设为 1，那么就只剩下一个变量 \\(\\alpha\\)，这个就是上面算出来的 3 个球。\n结果符合现实情况。\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n注意，gamma(alpha_prior).pdf(lambdas) 算的是 PDF，要乘以间隔才是 PMF (probability mass function)。",
     "crumbs": [
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Minimum, Maxium, and Mixture</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
     ]
   },
   {
@@ -225,16 +215,6 @@
     "title": "7  泊松过程",
     "section": "7.2 Probability of Superiority",
     "text": "7.2 Probability of Superiority\n\n德国男足最近的一场比赛射进 4 个球，巴西队最近一场比赛射进 2 个球。我们有多大信心说德国男足更强？\n\n我们首先要把各自队的 posterior 求出来：\n\ndef get_posterior_pmf(lambdas, k, prior_pmf):\n    likelihood_pmf = poisson(lambdas).pmf(k)\n    posterior = normalize_array(\n        prior_pmf * likelihood_pmf)\n    return posterior\n\n\nge_posterior_pmf = get_posterior_pmf(lambdas, 4, prior_pmf)\nbr_posterior_pmf = get_posterior_pmf(lambdas, 2, prior_pmf)\n\n\n\nCode\nplt.scatter(x = lambdas, \n            y = ge_posterior_pmf, \n            s = 2, \n            color=\"steelblue\", \n            label=\"Germany\")\nplt.scatter(x = lambdas, \n            y = br_posterior_pmf, \n            s = 2, \n            color = \"orange\", \n            label=\"Brazil\")\nplt.xlabel(r\"$\\lambda$\")\nplt.ylabel(\"Probability Mass\")\nplt.legend()\nplt.title(r\"Posterior Distribution\")\n\n\nText(0.5, 1.0, 'Posterior Distribution')\n\n\n\n\n\n\n\n\n\n这里 \\(\\lambda\\) 所代表的是一个国家队平均而言每场得多少分。\n总体思路是这样：德国队随机一个 \\(\\lambda\\)，巴西队也随机选一个，德国对应的 \\(\\lambda\\) 比巴西的大的概率。\n算法如下：\n\\[\nP(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}) = \\sum_{\\lambda_{\\text{Germany}}} \\sum_{\\lambda_{\\text{Brazil}}} P(\\lambda_{\\text{Germany}}) \\cdot P(\\lambda_{\\text{Brazil}}) \\cdot \\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}})\n\\]\n其中 \\(\\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}})\\) 是 Indicator function，如果 \\(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}\\) 则 \\(\\mathbb{I}(\\lambda_{\\text{Germany}} &gt; \\lambda_{\\text{Brazil}}) = 1\\)，反之则为 0。\n\ntotal = 0\nfor i, lam_ge in enumerate(lambdas):\n    for j, lam_br in enumerate(lambdas):\n        if lam_ge &gt; lam_br:\n            total += ge_posterior_pmf[i] * br_posterior_pmf[j]\ntotal\n\n0.7152072603914539\n\n\n\n\n\n\n\n\nTip\n\n\n\n想一下下面这个想法为什么是错的：\nsum = 0\nfor i, lam in enumerate(lambdas):\n    if ge_posterior_pmf[i] &gt; br_posterior_pmf[i]:\n        sum += 1",
-    "crumbs": [
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
-    ]
-  },
-  {
-    "objectID": "07_poisson_process.html#gamma-分布",
-    "href": "07_poisson_process.html#gamma-分布",
-    "title": "7  泊松过程",
-    "section": "",
-    "text": "中国男足队平均每场比赛进 5 个球 (请允许我在平行宇宙做一次梦)，请问下一场比赛中国进 2 个球的概率是多少\n\n\n\n\n\n\n\n中国队在一场球赛中进了 2 个球 (\\(k=2\\))，请问中国队平常一般进多少个球 (\\(\\lambda\\))？\n\n\n\n\n\n\\(k\\) 是数据\n\\(\\lambda\\) 是假设\n\\(P(\\lambda)\\) 是先验概率\n\\(P(k|\\lambda)\\) 是似然\n\n\n\n\n\n\n\n\nTip\n\n\n\n为什么我们可以忽略 \\(P(k)\\) 呢？因为它是一个常量：\n\\[\nP(k) = \\sum_{\\lambda} P(k|\\lambda) \\cdot P(\\lambda)\n\\]\n我们最后让 posteior 和为一的时候，也是要对所有的结果乘上一个常量。那我们最后再做就好，没有必要这时候乘。\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n因为它的自变量是从 0 开始的。\n如果我们把 \\(\\beta\\) 预设为 1，那么就只剩下一个变量 \\(\\alpha\\)，这个就是上面算出来的 3 个球。\n结果符合现实情况。\n\n\n\n\n\n\n\n\n\nTip\n\n\n\n注意，gamma(alpha_prior).pdf(lambdas) 算的是 PDF，要乘以间隔才是 PMF (probability mass function)。",
     "crumbs": [
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>泊松过程</span>"
     ]
@@ -290,31 +270,11 @@
     ]
   },
   {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "引用",
-    "section": "",
-    "text": "Gorman, Kristen B, Tony D Williams, and William R Fraser. 2014.\n“Ecological Sexual Dimorphism and Environmental Variability Within\na Community of Antarctic Penguins (Genus Pygoscelis).” PloS\nOne 9 (3): e90081.",
-    "crumbs": [
-      "引用"
-    ]
-  },
-  {
-    "objectID": "12_classification.html#朴素贝叶斯分类",
-    "href": "12_classification.html#朴素贝叶斯分类",
+    "objectID": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
+    "href": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
     "title": "8  分类",
-    "section": "8.3 朴素贝叶斯分类",
-    "text": "8.3 朴素贝叶斯分类\n接下来，我们对 penguins 中每一行进行预测：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification'].notna()\nvalid.sum()\n\n342\n\n\n\nsame = penguins['species'] == penguins['Classification']\nsame.sum()\n\n331\n\n\n\nsame.sum() / valid.sum()\n\n0.9678362573099415\n\n\n我们再来看一下如果用 Empirical prior 结果会如何：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, empirical_prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred\n\nvalid = penguins['Classification'].notna()\nsame = penguins['species'] == penguins['Classification']\nsame.sum() / valid.sum()\n\n0.9707602339181286\n\n\n我们看到用 Empirical prior 的结果更好一些。",
-    "crumbs": [
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
-    ]
-  },
-  {
-    "objectID": "12_classification.html#多元正态分布",
-    "href": "12_classification.html#多元正态分布",
-    "title": "8  分类",
-    "section": "8.5 多元正态分布",
-    "text": "8.5 多元正态分布\n如果两个变量完全不相关，结果会是这样：\n\nnp.random.seed(0)\nx = np.random.rand(200)\ny = np.random.rand(200)\n\nplt.figure(figsize=(8,6))\nplt.scatter(x, y, alpha = 0.7)\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot of Two Uncorrelated Variables')\nplt.show()\n\n\n\n\n\n\n\n\n\n\nCode\ndef scatterplot(df, var1, var2):\n    plt.figure(figsize=(10,8))\n    sns.scatterplot(\n        data = df,\n        x = var1, \n        y = var2, \n        hue='species',\n        palette='colorblind',\n        s = 100, \n        alpha = 0.7\n    )\n    plt.xlim(0)\n    plt.ylim(0)\n    plt.axis(\"equal\")\n    plt.xlabel(var1)\n    plt.ylabel(var2)\n    plt.title(f'Scatter Plot of {var1} vs. {var2} by Species')\n    plt.legend(title = \"Species\")\n    plt.show()\n\n\n\nscatterplot(penguins, predictors[2], predictors[0])\n\n\n\n\n\n\n\n\n我们看到对于每一个 Species 来说，这两个变量很明显是相关的，而不是完全不相关。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
+    "section": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)",
+    "text": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)\n接下来，我们对 penguins 中每一行进行预测：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification'].notna()\nvalid.sum()\n\n342\n\n\n\nsame = penguins['species'] == penguins['Classification']\nsame.sum()\n\n331\n\n\n\nsame.sum() / valid.sum()\n\n0.9678362573099415\n\n\n我们再来看一下如果用 Empirical prior 结果会如何：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, empirical_prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred\n\nvalid = penguins['Classification'].notna()\nsame = penguins['species'] == penguins['Classification']\nsame.sum() / valid.sum()\n\n0.9707602339181286\n\n\n我们看到用 Empirical prior 的结果更好一些。",
     "crumbs": [
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
     ]
@@ -330,26 +290,6 @@
     ]
   },
   {
-    "objectID": "12_classification.html#多元正态分布-multivariate-normal-distribution",
-    "href": "12_classification.html#多元正态分布-multivariate-normal-distribution",
-    "title": "8  分类",
-    "section": "8.5 多元正态分布 (Multivariate Normal Distribution)",
-    "text": "8.5 多元正态分布 (Multivariate Normal Distribution)\n如果两个变量完全不相关，结果会是这样：\n\nnp.random.seed(0)\nx = np.random.rand(200)\ny = np.random.rand(200)\n\nplt.figure(figsize=(8,6))\nplt.scatter(x, y, alpha = 0.7)\nplt.xlabel('X')\nplt.ylabel('Y')\nplt.title('Scatter Plot of Two Uncorrelated Variables')\nplt.show()\n\n\n\n\n\n\n\n\n\n\nCode\ndef scatterplot(df, var1, var2):\n    plt.figure(figsize=(10,8))\n    sns.scatterplot(\n        data = df,\n        x = var1, \n        y = var2, \n        hue='species',\n        palette='colorblind',\n        s = 100, \n        alpha = 0.7\n    )\n    plt.xlim(0)\n    plt.ylim(0)\n    plt.axis(\"equal\")\n    plt.xlabel(var1)\n    plt.ylabel(var2)\n    plt.title(f'Scatter Plot of {var1} vs. {var2} by Species')\n    plt.legend(title = \"Species\")\n    plt.show()\n\n\n\nscatterplot(penguins, predictors[2], predictors[0])\n\n\n\n\n\n\n\n\n我们看到对于每一个 Species 来说，这两个变量很明显是相关的，而不是完全不相关。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
-    "crumbs": [
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
-    ]
-  },
-  {
-    "objectID": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
-    "href": "12_classification.html#朴素贝叶斯分类-naive-bayesian-classification",
-    "title": "8  分类",
-    "section": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)",
-    "text": "8.3 朴素贝叶斯分类 (Naive Bayesian Classification)\n接下来，我们对 penguins 中每一行进行预测：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification'].notna()\nvalid.sum()\n\n342\n\n\n\nsame = penguins['species'] == penguins['Classification']\nsame.sum()\n\n331\n\n\n\nsame.sum() / valid.sum()\n\n0.9678362573099415\n\n\n我们再来看一下如果用 Empirical prior 结果会如何：\n\npenguins['Classification'] = 'None'\nfor i, row in penguins.iterrows():\n    data = dict(row[predictors])\n    res = update_naive(data, empirical_prior, likelihood)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification'] = pred\n\nvalid = penguins['Classification'].notna()\nsame = penguins['species'] == penguins['Classification']\nsame.sum() / valid.sum()\n\n0.9707602339181286\n\n\n我们看到用 Empirical prior 的结果更好一些。",
-    "crumbs": [
-      "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
-    ]
-  },
-  {
     "objectID": "12_classification.html#使用多元正态分布",
     "href": "12_classification.html#使用多元正态分布",
     "title": "8  分类",
@@ -357,6 +297,26 @@
     "text": "8.5 使用多元正态分布\n接下来，我们使用多元正态分布来做分类。\n我们首先对不同的 Species 计算出相对应的均值向量和协方差矩阵：\n\nmean_cov_dic = {} # key is species and value is mean and cov\nfor s, group in penguins.groupby('species'):\n    mean_vector = group[predictors].mean().values\n    covariance_matrix = group[predictors].cov().values \n    mean_cov_dic[s] = {\n        'mean': mean_vector,\n        'cov': covariance_matrix\n    }\n\n然后我们把 Equation 8.1 和 Equation 8.2 联合起来用。\n\ndef update_multivarate_normal(data, prior, mean_cov_dic):\n    res = {}\n    for s, s_prior in prior.items():\n        mean_vector = mean_cov_dic[s]['mean']\n        covariance_matrix = mean_cov_dic[s]['cov']\n        rv = multivariate_normal(mean=mean_vector, cov=covariance_matrix)\n        z = rv.pdf(data)\n        res[s] = s_prior * z \n    normalized_res_values = normalize_array(np.array(list(res.values())))\n    res = dict(zip(res.keys(), normalized_res_values))\n    return res \n\n\npenguins['Classification2'] = 'None'\nfor i, row in penguins.iterrows():\n    data = row[predictors]\n    res = update_multivarate_normal(data, prior, mean_cov_dic)\n    pred = max(res, key = res.get)\n    penguins.loc[i, 'Classification2'] = pred \n\n\npenguins.head()\n\n\n\n\n\n\n\n\nspecies\nisland\nbill_length_mm\nbill_depth_mm\nflipper_length_mm\nbody_mass_g\nsex\nClassification\nClassification2\n\n\n\n\n0\nAdelie\nTorgersen\n39.1\n18.7\n181.0\n3750.0\nMale\nAdelie\nAdelie\n\n\n1\nAdelie\nTorgersen\n39.5\n17.4\n186.0\n3800.0\nFemale\nAdelie\nAdelie\n\n\n2\nAdelie\nTorgersen\n40.3\n18.0\n195.0\n3250.0\nFemale\nAdelie\nAdelie\n\n\n4\nAdelie\nTorgersen\n36.7\n19.3\n193.0\n3450.0\nFemale\nAdelie\nAdelie\n\n\n5\nAdelie\nTorgersen\n39.3\n20.6\n190.0\n3650.0\nMale\nAdelie\nAdelie\n\n\n\n\n\n\n\n\nvalid = penguins['Classification2'].notna()\nsame = penguins['species'] == penguins['Classification2']\nsame.sum() / valid.sum()\n\n0.9912280701754386\n\n\n我们可以看到准确里提高到了 99%。\n\n\n\n\nGorman, Kristen B, Tony D Williams, and William R Fraser. 2014. “Ecological Sexual Dimorphism and Environmental Variability Within a Community of Antarctic Penguins (Genus Pygoscelis).” PloS One 9 (3): e90081.",
     "crumbs": [
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>分类</span>"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Learn Bayes",
+    "section": "",
+    "text": "说明\n本书用 Quarto 制作。用来记录我学习 http://allendowney.github.io/ThinkBayes2 的过程",
+    "crumbs": [
+      "说明"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "引用",
+    "section": "",
+    "text": "Gorman, Kristen B, Tony D Williams, and William R Fraser. 2014.\n“Ecological Sexual Dimorphism and Environmental Variability Within\na Community of Antarctic Penguins (Genus Pygoscelis).” PloS\nOne 9 (3): e90081.",
+    "crumbs": [
+      "引用"
     ]
   }
 ]

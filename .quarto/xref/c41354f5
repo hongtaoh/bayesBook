@@ -1,1 +1,1 @@
-{"entries":[{"order":{"section":[2,1,0,0,0,0,0],"number":1},"key":"sec-red-white-balls","caption":"2.1 红球与白球"}],"headings":["sec-red-white-balls","贝叶斯表","骰子问题","三重门"],"options":{"chapters":true}}
+{"entries":[{"key":"sec-red-white-balls","caption":"2.1 红球与白球","order":{"number":1,"section":[2,1,0,0,0,0,0]}}],"headings":["sec-red-white-balls","贝叶斯表","骰子问题","三重门"],"options":{"chapters":true}}
